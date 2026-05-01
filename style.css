@@ -1,0 +1,341 @@
+:root {
+    --bg-color: #f3ebff;
+    --primary-color: #00fba6; /* keeping neon green as accent */
+    --secondary-color: #7000ff; /* matching the purple from Steno grid */
+    --card-bg: #1a1a24; /* Keeping dark cards so the original design stays intact */
+    --card-border: rgba(0, 0, 0, 0.1);
+    --text-main: #0a0a14;
+    --text-muted: #555566;
+    --font-heading: 'Outfit', sans-serif;
+    --font-mono: 'Fira Code', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: radial-gradient(circle at 50% 50%, #f3ebff 0%, #ffffff 100%);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.glow-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, rgba(112, 0, 255, 0.1) 0%, transparent 50%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Typography styles */
+h1, h2, h3 {
+    letter-spacing: -0.02em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Header */
+.hero {
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+}
+
+.main-title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.main-title span {
+    color: var(--secondary-color);
+    text-shadow: 0 0 20px rgba(112, 0, 255, 0.2);
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+/* Project Grid */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-out backwards;
+}
+
+/* Stagger card animations */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+.card:nth-child(7) { animation-delay: 0.7s; }
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(0, 251, 166, 0.3);
+    box-shadow: 0 10px 30px -10px rgba(0, 251, 166, 0.2);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+}
+
+.task-badge {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: rgba(163, 0, 251, 0.2);
+    color: var(--secondary-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    border: 1px solid rgba(163, 0, 251, 0.3);
+}
+
+.card-content {
+    flex-grow: 1;
+}
+
+.card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.card:hover h2 {
+    color: var(--primary-color);
+}
+
+.card p {
+    color: #a0a0bd;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .card-footer {
+    opacity: 1;
+}
+
+.card-footer span {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-footer span {
+    transform: translateX(4px);
+}
+
+/* Featured Section */
+.featured-section {
+    margin-top: 5rem;
+    animation: fadeIn 1s ease-out 0.8s backwards;
+}
+
+.highlight-wrapper {
+    position: relative;
+    padding: 1px;
+    border-radius: 24px;
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    box-shadow: 0 0 40px rgba(163, 0, 251, 0.2);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.highlight-wrapper:hover {
+    box-shadow: 0 0 60px rgba(0, 251, 166, 0.3);
+    transform: scale(1.02);
+}
+
+.featured-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0a0a14;
+    border-radius: 23px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.steno-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(163, 0, 251, 0.2) 0%, transparent 70%);
+    top: -50px;
+    right: -50px;
+    border-radius: 50%;
+}
+
+.featured-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.featured-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff, var(--text-muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.featured-content p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: linear-gradient(135deg, var(--secondary-color), #6a00f0);
+    color: #fff;
+    padding: 1rem 2.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px -10px rgba(163, 0, 251, 0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.steno:hover .action-btn {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px -10px rgba(163, 0, 251, 0.7);
+    background: linear-gradient(135deg, #b833ff, #8000ff);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 3rem;
+    border-top: 1px solid var(--card-border);
+    margin-top: 4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-family: var(--font-mono);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 3rem;
+    }
+}

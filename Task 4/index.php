@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Demonstration</title>
+    <link rel="stylesheet" href="style-light.css?v=4">
+    <!-- Load Feather Icons for elegant SVGs -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <div class="mesh-bg"></div>
+    
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-brand"><span>CROSS-SITE</span> SCRIPTING</div>
+            <div class="nav-links">
+                <a href="#intro">Intro</a>
+                <a href="#types">Types</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#prevention">Prevention</a>
+            </div>
+        </nav>
+
+        <header class="hero">
+            <h1 class="title-main">CROSS-SITE SCRIPTING</h1>
+            <p class="subtitle">An interactive web security demonstration built to help students understand, identify, and prevent Cross-Side Scripting (XSS) vulnerabilities.</p>
+            <a href="#intro" class="btn-discover">Discover More</a>
+        </header>
+
+        <!-- Concept 1: XSS -->
+        <div id="intro" class="bento-card" style="margin-bottom: 2rem;">
+            <div class="concept-section">
+                <!-- Concept 1 Header -->
+                <div class="concept-header" style="margin-bottom: 2rem;">
+                    <div>
+                        <h2 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: #ef4444;">Understanding Cross-Site Scripting</h2>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">The anatomy of web-based injection vulnerabilities.</p>
+                    </div>
+                </div>
+                <!-- Concept 1 Body: Split Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+                    <div>
+                        <p style="font-size: 1.15rem; line-height: 1.8; color: var(--text-secondary);">Cross-Site Scripting (XSS) is a sophisticated attack vector where malicious scripts are injected into otherwise benign and trusted websites. They occur anywhere a web application uses input from a user without validating or encoding it.</p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="background: rgba(239, 68, 68, 0.05); border-left: 4px solid #ef4444; padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Stored XSS</h4>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary);">Permanently stored on the server.</p>
+                        </div>
+                        <div style="background: rgba(245, 158, 11, 0.05); border-left: 4px solid #f59e0b; padding: 1.5rem; border-radius: 8px;">
+                            <h4 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Reflected XSS</h4>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary);">Reflected off the web application to the victim's browser.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Concept 2: Input Validation -->
+        <div class="bento-card" style="margin-bottom: 2rem; text-align: center; border: 2px dashed rgba(59, 130, 246, 0.3);">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; margin-bottom: 1.5rem;">
+                <i data-feather="check-square" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h2 style="font-size: 2.25rem; font-weight: 800; color: #3b82f6; margin-bottom: 1rem;">The Validation Engine</h2>
+            <p style="color: var(--text-secondary); font-size: 1.15rem; max-width: 700px; margin: 0 auto 3rem; line-height: 1.8;">
+                Enforcing strict data integrity at the entry point. Validation rejects any input that doesn't perfectly match expected types, formats, or lengths before complex processing.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+                <div style="background: #ffffff; padding: 1.5rem 2.5rem; border-radius: 999px; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);">
+                    <h4 style="font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: #1e1e24; margin: 0;">Type & Format Control</h4>
+                </div>
+                <div style="background: #ffffff; padding: 1.5rem 2.5rem; border-radius: 999px; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);">
+                    <h4 style="font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: #1e1e24; margin: 0;">Constraint Enforcement</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Concept 3: Sanitization -->
+        <div class="bento-card" style="margin-bottom: 2rem; background: #ffffff; border-radius: 24px; box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.1);">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 3rem;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 style="font-size: 2.25rem; font-weight: 800; color: #10b981; margin-bottom: 1rem;">Safety via Sanitization</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                        Transforming untrusted data into harmless visual entities. By converting active characters to HTML entities, we tell the browser to treat content as text constraint rather than executable code.
+                    </p>
+                    <div style="display: inline-flex; gap: 1rem; background: rgba(16, 185, 129, 0.1); padding: 0.75rem 1.5rem; border-radius: 8px; color: #059669; font-weight: 600; font-family: var(--font-mono); font-size: 0.95rem;">
+                        <span>Contextual Encoding</span> &bull; <span>Entity Conversion</span>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 300px; background: #f8fafc; padding: 2.5rem; border-radius: 16px; border: 1px dashed rgba(16, 185, 129, 0.3);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <code style="color: #ef4444; background: transparent; padding: 0; font-size: 1.1rem; font-weight: 700;">&lt;script&gt;</code> 
+                        <i data-feather="arrow-right" style="color: #94a3b8;"></i>
+                        <code style="color: #059669; background: transparent; padding: 0; font-size: 1.1rem; font-weight: 700;">&amp;lt;script&amp;gt;</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Concept 4: Secure SDLC -->
+        <div class="bento-card" style="margin-bottom: 2rem;">
+            <h2 style="font-size: 2.25rem; font-weight: 800; color: #8b5cf6; margin-bottom: 0.5rem; text-align: center;">Secure Lifecycle</h2>
+            <p style="color: var(--text-secondary); font-size: 1.15rem; text-align: center; margin-bottom: 3.5rem;">Engineering security into every phase of development via Defense in Depth.</p>
+            
+            <div style="display: flex; align-items: stretch; justify-content: center; gap: 1.5rem; position: relative; flex-wrap: wrap;">
+                <div style="background: #ffffff; padding: 2rem; border-radius: 20px; border: 2px solid #c4b5fd; text-align: center; flex: 1; min-width: 250px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: transform 0.2s;">
+                    <div style="width: 40px; height: 40px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 1rem; font-family: var(--font-heading);">1</div>
+                    <h4 style="font-weight: 700; color: #1e1e24; font-size: 1.25rem;">Identify Flaws</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem;">Catch vulnerabilities early in design.</p>
+                </div>
+                <div style="background: #ffffff; padding: 2rem; border-radius: 20px; border: 2px solid #a78bfa; text-align: center; flex: 1; min-width: 250px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: transform 0.2s;">
+                    <div style="width: 40px; height: 40px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 1rem; font-family: var(--font-heading);">2</div>
+                    <h4 style="font-weight: 700; color: #1e1e24; font-size: 1.25rem;">Validate & Encode</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem;">Apply entry and exit protections.</p>
+                </div>
+                <div style="background: #ffffff; padding: 2rem; border-radius: 20px; border: 2px solid #8b5cf6; text-align: center; flex: 1; min-width: 250px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05); transition: transform 0.2s;">
+                    <div style="width: 40px; height: 40px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 1rem; font-family: var(--font-heading);">3</div>
+                    <h4 style="font-weight: 700; color: #1e1e24; font-size: 1.25rem;">CSP Implementation</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem;">Browser-level script restrictions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="types" class="bento-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="info" style="color: var(--text-secondary);"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">Deep Dive: Types of XSS</h2>
+            </div>
+            
+            <div class="grid-2">
+                <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border-soft); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: #ef4444; margin-bottom: 0.75rem;">1. Stored (Persistent) XSS</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">The most dangerous type. The malicious script is permanently stored on the target server (e.g., in a database, in a comment field). When a victim views the page, the script executes.</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border-soft); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: #f59e0b; margin-bottom: 0.75rem;">2. Reflected (Non-Persistent) XSS</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">The script is "reflected" off a web application to the victim's browser. It's usually delivered via a link (e.g., in a URL parameter) and is not stored on the server.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 1.5rem;">
+                <h3 style="font-size: 1rem; color: #60a5fa; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;"><i data-feather="shield" style="width: 18px; height: 18px;"></i> Prevention Best Practices</h3>
+                <ul style="font-size: 0.9rem; color: var(--text-secondary); list-style-position: inside; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <li>Output Encoding (e.g., htmlspecialchars)</li>
+                    <li>Input Validation & Sanitization</li>
+                    <li>Use Content Security Policy (CSP)</li>
+                    <li>Use Secure Cookies (HttpOnly, Secure)</li>
+                    <li>Avoid dangerous JS functions like eval()</li>
+                    <li>Use Modern Frameworks with built-in protection</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section: Why XSS is Dangerous -->
+        <div class="bento-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="zap" style="color: #ef4444;"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">Why XSS is Dangerous</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Cross-Site Scripting allows an attacker to run their own JavaScript inside a victim’s browser
+                as if it came from the trusted website. Once this happens, the attacker can abuse the user’s
+                active session, data, and trust in the site.
+            </p>
+            <div class="grid-2" style="gap: 1.5rem;">
+                <div class="feature-item-detailed">
+                    <i data-feather="key" class="feature-icon-sm" style="color: #ef4444;"></i>
+                    <div class="feature-content-sm">
+                        <h4>Steal Session Cookies</h4>
+                        <p>
+                            Many applications rely on cookies to identify logged-in users. Malicious scripts can
+                            read <code>document.cookie</code> and silently send session tokens to the attacker,
+                            who can then impersonate the victim without knowing their password.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="user-x" class="feature-icon-sm" style="color: #ef4444;"></i>
+                    <div class="feature-content-sm">
+                        <h4>Hijack User Accounts</h4>
+                        <p>
+                            With stolen session cookies or injected scripts, attackers can perform actions as the
+                            victim: changing passwords, viewing personal data, sending messages, or abusing any
+                            privileges the account has.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="external-link" class="feature-icon-sm" style="color: #ef4444;"></i>
+                    <div class="feature-content-sm">
+                        <h4>Malicious Redirects</h4>
+                        <p>
+                            Injected JavaScript can change <code>window.location</code> and silently redirect
+                            users to phishing pages or malware sites, even though they started on a legitimate,
+                            trusted domain.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="eye-off" class="feature-icon-sm" style="color: #ef4444;"></i>
+                    <div class="feature-content-sm">
+                        <h4>Display Fake Content</h4>
+                        <p>
+                            Because the script can modify the DOM, attackers can inject fake login forms,
+                            alerts, or notifications that look genuine, tricking users into entering passwords,
+                            card details, or other sensitive data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-item-detailed" style="margin-top: 1.5rem; border-color: rgba(239, 68, 68, 0.3);">
+                <i data-feather="unlock" class="feature-icon-sm" style="color: #ef4444;"></i>
+                <div class="feature-content-sm">
+                    <h4>Steal Sensitive Data</h4>
+                    <p>
+                        Malicious code running in the browser can read anything visible on the page, intercept
+                        form data before it is submitted, capture keystrokes, and exfiltrate CSRF tokens or
+                        other security-critical values to an attacker-controlled server.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: How XSS Works (Step-by-Step) -->
+        <div id="how-it-works" class="bento-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="activity" style="color: #3b82f6;"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">How XSS Works (Step-by-Step)</h2>
+            </div>
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Malicious Entry</h4>
+                        <p>
+                            The attacker injects a malicious script into an input field such as a comment box,
+                            search bar, feedback form, or profile description.
+                        </p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Failed Sanitization</h4>
+                        <p>
+                            The web application receives the input but does not properly validate, sanitize, or
+                            encode it, allowing the raw <code>&lt;script&gt;</code> tags and JavaScript to pass
+                            through as if they were harmless text.
+                        </p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Script Storage/Reflection</h4>
+                        <p>
+                            The malicious payload is either stored on the server (Stored XSS) or immediately
+                            echoed back in the HTTP response (Reflected XSS), becoming part of the page HTML
+                            that other users will load.
+                        </p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Browser Execution</h4>
+                        <p>
+                            When a victim visits the affected page, the browser sees the injected
+                            <code>&lt;script&gt;</code> block, interprets it as JavaScript, and executes it with
+                            full access to that site’s cookies, DOM, and web APIs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scenario-box">
+                <h4 style="color: #f59e0b; margin-bottom: 0.5rem; font-size: 0.95rem;">Simple XSS Example:</h4>
+                <div class="code-block-premium">
+                    &lt;script&gt;alert("XSS Attack")&lt;/script&gt;
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    If the website does not filter or encode this input, the victim's browser will treat the
+                    <code>&lt;script&gt;</code> tag as real code and execute the JavaScript instead of rendering
+                    it as plain text.
+                </p>
+            </div>
+        </div>
+
+        <!-- Section: Three Types of XSS -->
+        <div class="bento-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="layers" style="color: #8b5cf6;"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">Types of Cross-Site Scripting</h2>
+            </div>
+            <div class="grid-2" style="gap: 1.5rem;">
+                <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border-soft); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: #ef4444; margin-bottom: 0.75rem;">1. Stored XSS</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">The script is permanently stored in the database. Every user who loads the page becomes a victim.</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border-soft); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: #f59e0b; margin-bottom: 0.75rem;">2. Reflected XSS</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">The script is included in a URL or form submission and is immediately "reflected" back to the user.</p>
+                </div>
+            </div>
+            <div style="margin-top: 1.5rem; background: rgba(0,0,0,0.02); border: 1px solid var(--border-soft); border-radius: 12px; padding: 1.5rem;">
+                <h3 style="font-size: 1rem; color: #3b82f6; margin-bottom: 0.75rem;">3. DOM-Based XSS</h3>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">An advanced type where the vulnerability exists in the client-side code itself. The attack happens when JavaScript processes unsafe input and modifies the Document Object Model (DOM) directly.</p>
+            </div>
+        </div>
+
+        <!-- Section: Example Scenario -->
+        <div class="bento-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="terminal" style="color: #10b981;"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">Educational Scenario</h2>
+            </div>
+            <div class="concept-text-large">
+                <p>Imagine a social website where users can post comments. A user named "Attacker" posts a comment containing: </p>
+                <div class="code-block-premium">
+                    &lt;script&gt;alert("You have been hacked")&lt;/script&gt;
+                </div>
+                <p>If the website doesn't sanitize the comment, the browser of every person who views that comment will pop up an alert box. In a real attack, instead of a harmless alert, the script could be sending the user's login cookies to the attacker's server.</p>
+            </div>
+        </div>
+
+        <!-- Section: Prevention Techniques -->
+        <div id="prevention" class="bento-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="shield-check" style="color: #10b981;"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">Prevention Techniques</h2>
+            </div>
+            <div class="grid-2" style="gap: 1.25rem;">
+                <div class="feature-item-detailed">
+                    <i data-feather="check" class="feature-icon-sm"></i>
+                    <div class="feature-content-sm">
+                        <h4>Validate & Sanitize</h4>
+                        <p>Always treat user input as untrusted and use libraries to strip out dangerous tags.</p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="code" class="feature-icon-sm"></i>
+                    <div class="feature-content-sm">
+                        <h4>Encode Output</h4>
+                        <p>Convert special characters like <code>&lt;</code> to <code>&amp;lt;</code> before rendering them on the page.</p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="cpu" class="feature-icon-sm"></i>
+                    <div class="feature-content-sm">
+                        <h4>Secure Frameworks</h4>
+                        <p>Use modern frameworks like React or Angular that have built-in XSS protection.</p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="server" class="feature-icon-sm"></i>
+                    <div class="feature-content-sm">
+                        <h4>Implement CSP</h4>
+                        <p>Define a Content Security Policy to tell the browser which scripts are allowed to execute.</p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="slash" class="feature-icon-sm"></i>
+                    <div class="feature-content-sm">
+                        <h4>Avoid Inline JS</h4>
+                        <p>Never place JavaScript directly in HTML attributes like <code>onclick</code> or <code>onerror</code>.</p>
+                    </div>
+                </div>
+                <div class="feature-item-detailed">
+                    <i data-feather="shield" class="feature-icon-sm"></i>
+                    <div class="feature-content-sm">
+                        <h4>Secure Coding</h4>
+                        <p>Follow OWASP guidelines and perform regular security audits of your codebase.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bento-card">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <i data-feather="play-circle" style="color: var(--text-secondary);"></i>
+                <h2 style="font-size: 1.25rem; font-weight: 600;">Interactive Demo</h2>
+            </div>
+
+            <div class="grid-2">
+                <a href="vulnerable.php" class="demo-card vuln">
+                    <div class="card-icon" style="color: #ef4444;"><i data-feather="alert-circle"></i></div>
+                    <h3 class="demo-title">Vulnerable Version</h3>
+                    <p class="demo-desc">
+                        A comment system with no input filtering. Inject <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> to trigger the browser payload execution.
+                    </p>
+                    <div class="card-action">
+                        Launch Demo <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+                    </div>
+                </a>
+
+                <a href="secure.php" class="demo-card sec">
+                    <div class="card-icon" style="color: #10b981;"><i data-feather="shield-main"></i></div>
+                    <h3 class="demo-title">Secure Version</h3>
+                    <p class="demo-desc">
+                        The same system protected by robust input sanitization. Watch how malicious scripts are rendered completely harmless.
+                    </p>
+                    <div class="card-action">
+                        View Code <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <i data-feather="shield" style="width: 20px; height: 20px; color: var(--accent-primary);"></i>
+                <span style="font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary);">XSS Lab</span>
+            </div>
+            <p style="max-width: 400px; margin: 0 auto 1.5rem auto; opacity: 0.8; text-align: center;">
+                An educational project for understanding and mitigating web vulnerabilities.
+            </p>
+            <div class="footer-links">
+                <a href="index.php">Home</a>
+                <a href="vulnerable.php">Vulnerable</a>
+                <a href="secure.php">Secure</a>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.05); width: 100%; display: flex; justify-content: center; gap: 1rem; align-items: center;">
+                <span class="footer-tag"><i data-feather="code" style="width: 12px; height: 12px;"></i> CS04 Project</span>
+                <span style="opacity: 0.3;">&bull;</span>
+                <span>&copy; 2026 Educational Security Lab</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+    </script>
+</body>
+</html>

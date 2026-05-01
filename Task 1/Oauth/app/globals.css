@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 23 23 23;
+  }
+}
+
+body {
+  color: rgb(var(--foreground));
+  background: white;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle Grid Pattern */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Cyber/Neon Utilities */
+@layer components {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-600;
+  }
+  
+  .btn-primary {
+    @apply relative w-full py-3 px-4 rounded-full font-medium text-white
+    bg-gradient-to-r from-pink-500 to-violet-600
+    transition-all duration-300 transform;
+  }
+
+  .btn-primary:hover {
+    @apply shadow-[0_0_20px_#ec489980] -translate-y-0.5;
+  }
+
+  .btn-primary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .btn-primary:disabled:hover {
+    @apply translate-y-0 shadow-none;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/50 backdrop-blur-sm
+    focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500
+    transition-all duration-300
+    placeholder:text-gray-400;
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl;
+  }
+}
+
+/* Loading Spinner */
+.loader {
+  border: 3px solid rgba(236, 72, 153, 0.1);
+  border-left-color: #ec4899;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

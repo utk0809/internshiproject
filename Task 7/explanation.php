@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHOENIX | How Email Works</title>
+    <meta name="description" content="Detailed explanations of email header fields and security.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .edu-section {
+            margin-bottom: 2.5rem;
+        }
+        .edu-section h3 {
+            font-family: var(--font-heading);
+            color: var(--accent-pink);
+            margin-bottom: 1.2rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .edu-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+        .security-tip {
+            background: rgba(188, 0, 255, 0.05);
+            border-left: 3px solid var(--accent-purple);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-top: 1.5rem;
+        }
+        .tip-label {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .edu-list li {
+            margin-bottom: 0.8rem;
+        }
+        .edu-list strong {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="index.php" class="nav-brand">PHOENIX</a>
+        <div class="nav-links-header">
+            <a href="index.php">Analyzer</a>
+            <a href="explanation.php">Security Guide</a>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <header class="app-header">
+            <h1>Email Security Guide</h1>
+            <p>Master the art of deconstructing email headers to expose cyber threats and verify routing paths.</p>
+        </header>
+
+        <main class="main-content">
+            <div class="glass analyzer-card">
+                <div class="edu-section">
+                    <h3><span style="color: var(--accent-pink)">&#9670;</span> SPOOFING AWARENESS</h3>
+                    <p>Cyber attackers use various techniques to deceive recipients. Here is how we catch them:</p>
+                    <ul class="edu-list" style="color: var(--text-secondary); padding-left: 1.5rem; display: flex; flex-direction: column;">
+                        <li><strong>Header Mismatch:</strong> Legitimate emails usually have matching <code>From</code> and <code>Return-Path</code> domains. Mismatches are a major red flag.</li>
+                        <li><strong>Typosquatting:</strong> Attackers use domains like <code>payp&alpha;l.com</code> instead of <code>paypal.com</code>. Always check for subtle character swaps.</li>
+                        <li><strong>Display Name Deception:</strong> Always look past the "Sender Name" to the actual email address in brackets.</li>
+                        <li><strong>Protocol Failures:</strong> If <strong>SPF</strong> or <strong>DKIM</strong> checks fail, the email is likely forged.</li>
+                    </ul>
+                </div>
+
+                <div class="edu-section">
+                    <h3><span style="color: var(--accent-blue)">&#9670;</span> SMTP SECURITY PROTOCOLS</h3>
+                    <p>To secure the plain SMTP protocol, these technologies were added to verify identity:</p>
+                    <ul class="edu-list" style="color: var(--text-secondary); padding-left: 1.5rem; display: flex; flex-direction: column;">
+                        <li><strong>SPF (Sender Policy Framework):</strong> Lists authorized IP addresses for a domain.</li>
+                        <li><strong>DKIM (DomainKeys Identified Mail):</strong> Adds a digital signature to the email content.</li>
+                        <li><strong>DMARC:</strong> Instructs the receiver how to handle emails that fail SPF or DKIM.</li>
+                    </ul>
+                </div>
+
+                <div class="edu-section">
+                    <h3><span style="color: var(--accent-yellow)">&#9670;</span> EMAIL ROUTING TRANSIT</h3>
+                    <p>Emails travel through <strong>Mail Transfer Agents (MTA)</strong>. Each hop adds a timestamped <code>Received</code> header with the handling server's identity and IP.</p>
+                    <p>Traces reveal the geographic and network origin, helping security analysts bypass fake labels.</p>
+                </div>
+
+                <div class="nav-links">
+                    <a href="index.php" class="nav-link">
+                        <span>&#9670;</span> BACK TO ANALYZER
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

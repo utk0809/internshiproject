@@ -1,0 +1,284 @@
+/* Redesigned Task 9 Design System - steno.tanmay.pro Theme */
+:root {
+    --bg-main: #f8fafc;
+    --accent-purple: #a855f7;
+    --accent-pink: #ec4899;
+    --accent-glow: rgba(168, 85, 247, 0.4);
+    --card-bg: rgba(31, 41, 55, 0.95);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-white: #ffffff;
+    --glass-blur: blur(12px);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    /* Dot Grid Background Effect */
+    background-image: 
+        radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Ambient Glow Blobs */
+body::before, body::after {
+    content: '';
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(120px);
+    opacity: 0.15;
+}
+
+body::before {
+    top: -200px;
+    left: -200px;
+    background: var(--accent-purple);
+}
+
+body::after {
+    bottom: -200px;
+    right: -200px;
+    background: var(--accent-pink);
+}
+
+.container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Navigation Tabs - steno.tanmay.pro inspired */
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.nav-tab {
+    text-decoration: none;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.nav-tab.active {
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    color: var(--text-white);
+    box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+}
+
+.nav-tab:not(.active) {
+    color: var(--text-secondary);
+    border-color: #e2e8f0;
+    background: white;
+}
+
+.nav-tab:hover:not(.active) {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    transform: translateY(-2px);
+}
+
+/* Header Section */
+.header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Glassmorphism Card Style */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    color: var(--text-white);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+/* Educational Panel inside Card */
+.educational-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--accent-purple);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 2.5rem;
+}
+
+.educational-panel h3 {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--accent-purple);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+}
+
+.educational-panel p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Upload Form Styling */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.file-input-wrapper {
+    position: relative;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.file-input-wrapper:hover {
+    border-color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#selected-file-label {
+    display: none;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--accent-pink);
+    animation: fadeIn 0.3s ease;
+}
+
+.upload-btn {
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    color: white;
+    border: none;
+    padding: 1.1rem 2rem;
+    border-radius: 50px;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+}
+
+.upload-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(236, 72, 153, 0.3);
+}
+
+.upload-btn:active {
+    transform: translateY(0);
+}
+
+/* Messages & Results */
+.message {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.message.success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+.message.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+.uploaded-filename {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-top: 0.75rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Scaling */
+@media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    .card { padding: 1.5rem; }
+}

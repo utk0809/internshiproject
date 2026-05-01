@@ -1,0 +1,57 @@
+Cyber Security Practical Project: XSS Attack Demo
+ (Safe Educational)
+This project helps students understand Cross-Site Scripting (XSS) attacks in a safe educational
+environment. Students will create a comment box web page, demonstrate a simple script injection
+example, and then create a secure version using input sanitization. The design and idea of the
+project can be inspired by a simple interactive site such as: https://steno.tanmay.pro/ The final
+project must be hosted using MilesWeb hosting and a MilesWeb subdomain.
+Project Concept
+Demonstration of Cross-Site Scripting (XSS) and how to prevent it using secure coding.
+Learning Objectives
+ Understand Cross-Site Scripting (XSS)
+ Learn how attackers inject malicious scripts
+ Understand input validation
+ Learn secure coding practices
+Project Tasks
+1. Create Comment Box
+Create a web page containing:
+ Name input field
+ Comment text box
+ Submit button
+Display submitted comments below the form.
+2. Script Injection Demonstration
+Allow users to enter script code such as:
+alert('XSS')
+In the vulnerable version, the script should execute when displayed.
+3. Secure Version
+Create another version where input is sanitized.
+Examples:
+ Escape HTML tags
+ Convert special characters
+ Prevent script execution
+
+
+The script should appear as text instead of running.
+Hosting Requirement (MilesWeb)
+Students must host the project using MilesWeb.
+Steps:
+ Use a MilesWeb hosting account
+ Create a subdomain from the MilesWeb control panel
+ Upload the project files
+Example:
+xss-demo.yourdomain.com
+Concepts Students Should Explain
+ Cross-Site Scripting (XSS)
+ Input validation
+ Input sanitization
+ Secure coding
+Expected Output
+ Working comment box application
+ XSS attack demonstration (vulnerable version)
+ Secure sanitized version
+ Live project hosted on a MilesWeb subdomain
+Important Note
+This project is strictly for educational purposes. Students must not use these techniques to attack
+real systems.
+
+

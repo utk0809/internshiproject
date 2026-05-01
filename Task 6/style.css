@@ -1,0 +1,1096 @@
+:root {
+    --bg-light: #ffffff;
+    --bg-surface: rgba(255, 255, 255, 0.8);
+    --bg-card: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(0, 0, 0, 0.1);
+    
+    --text-primary: #111111;
+    --text-secondary: #555555;
+    
+    --accent-primary: #ff007f; /* steno pink/magenta */
+    
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    min-height: 100vh;
+    /* Grid background inspired by steno.tanmay.pro */
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0;
+    animation: moveGrid 15s linear infinite;
+}
+
+@keyframes moveGrid {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
+}
+
+.glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    transition: var(--transition-normal);
+}
+.glass:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+.dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.app-header h1 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 3.5rem;
+    letter-spacing: -1px;
+    background: linear-gradient(90deg, #ff007f, #00d2ff, #bb00ff, #ff007f);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 6s ease-in-out infinite;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.gradient-title {
+    background: linear-gradient(90deg, #111, #666);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.app-header p {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.main-content {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.attack-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.nav-button {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--accent-blue);
+    transform: scaleY(0);
+    transition: var(--transition-normal);
+    transform-origin: bottom;
+}
+
+.nav-button:hover {
+    background: rgba(0, 0, 0, 0.02);
+    transform: translateX(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 210, 255, 0.4);
+}
+
+.instructions {
+    background: rgba(0, 210, 255, 0.05);
+    border: 1px dashed rgba(0, 210, 255, 0.3);
+    padding: 1.5rem;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Viewer Container and Tab Logic */
+.viewer-container {
+    flex: 1;
+    position: relative;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.tab-radio {
+    display: none;
+}
+
+.attack-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: var(--transition-normal);
+}
+
+
+/* View Content Styling */
+.attack-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.attack-header h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: -0.5px;
+}
+
+.attack-header .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.attack-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.info-card, .visual-card {
+    padding: 2rem;
+    border-radius: 12px;
+}
+
+.info-card h3, .visual-card h3 {
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-size: 1.3rem;
+}
+
+.info-card p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+.types-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.types-list li {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 2px solid var(--accent-blue);
+}
+
+.types-list li strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.diagram-container {
+    height: 400px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder-diagram {
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.static-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* ========================================= */
+/* NESTED MALWARE TABS & ANIMATIONS          */
+/* ========================================= */
+
+.attack-body.full-width {
+    display: block;
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.malware-sub-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sub-radio {
+    display: none;
+}
+
+.sub-nav {
+    display: flex;
+    gap: 1rem;
+    background: var(--bg-surface);
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.sub-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    transition: var(--transition-fast);
+    color: var(--text-secondary);
+}
+
+.sub-btn:hover {
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--text-primary);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Connect nested tabs */
+#sub_virus:checked ~ .sub-nav label[for="sub_virus"],
+#sub_worm:checked ~ .sub-nav label[for="sub_worm"],
+#sub_trojan:checked ~ .sub-nav label[for="sub_trojan"] {
+    background: #ffffff;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+#sub_virus:checked ~ .sub-nav label[for="sub_virus"] { border-bottom: 2px solid var(--accent-red); }
+#sub_worm:checked ~ .sub-nav label[for="sub_worm"] { border-bottom: 2px solid var(--accent-green); }
+#sub_trojan:checked ~ .sub-nav label[for="sub_trojan"] { border-bottom: 2px solid var(--accent-blue); }
+
+.sub-content {
+    position: relative;
+    min-height: 480px;
+}
+
+.sub-pane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px) scale(0.98);
+    transition: var(--transition-normal);
+}
+
+#sub_virus:checked ~ .sub-content #pane_virus,
+#sub_worm:checked ~ .sub-content #pane_worm,
+#sub_trojan:checked ~ .sub-content #pane_trojan {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    position: relative;
+}
+
+/* Typography styles matching Steno.tanmay.pro */
+.gradient-text {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 2rem;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.gradient-virus { background-image: linear-gradient(90deg, #ff3366, #ff8c00); }
+.gradient-worm { background-image: linear-gradient(90deg, #00ff88, #00bfff); }
+.gradient-trojan { background-image: linear-gradient(90deg, #bb00ff, #00d2ff); }
+
+.sub-info {
+    padding: 2rem;
+    border-radius: 12px;
+}
+.sub-info p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-top: 1rem;
+}
+
+.clean-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.clean-list li {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid rgba(0,0,0,0.1);
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+}
+.clean-list li:hover {
+    background: rgba(0, 0, 0, 0.06);
+    transform: translateX(5px);
+}
+.clean-list li strong {
+    color: var(--text-primary);
+}
+#pane_virus .clean-list li { border-left-color: #ff3366; }
+#pane_worm .clean-list li { border-left-color: #00ff88; }
+#pane_trojan .clean-list li { border-left-color: #bb00ff; }
+
+.sub-visual {
+    padding: 2rem;
+    border-radius: 12px;
+}
+.sub-visual .diagram-container {
+    height: 100%;
+    min-height: 380px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animations Specific to nested tabs */
+.anim-specific {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Virus Anim */
+.anim-virus .file-icon {
+    font-size: 4rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
+}
+.anim-virus .tiny-virus {
+    font-size: 2rem;
+    position: absolute;
+    top: 20%;
+    left: -20%;
+}
+.anim-virus .file-status {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-family: var(--font-heading);
+    background: rgba(0,0,0,0.5);
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+#sub_virus:checked ~ .sub-content #pane_virus .tiny-virus { animation: virusAttack 6s infinite; }
+#sub_virus:checked ~ .sub-content #pane_virus .file-icon { animation: fileCorrupt 6s infinite; }
+#sub_virus:checked ~ .sub-content #pane_virus .file-status { animation: statusChange 6s infinite; }
+
+@keyframes virusAttack {
+    0%, 10% { left: -20%; top: 20%; opacity: 0; }
+    20%, 40% { left: 45%; top: 40%; opacity: 1; transform: scale(1); }
+    45%, 80% { left: 50%; top: 50%; opacity: 0; transform: scale(0); }
+    100% { left: -20%; top: 20%; opacity: 0; }
+}
+@keyframes fileCorrupt {
+    0%, 40% { filter: drop-shadow(0 0 10px #fff); }
+    45%, 80% { filter: drop-shadow(0 0 20px #ff3366) hue-rotate(180deg); transform: translate(-50%, -50%) rotate(5deg); }
+    100% { filter: drop-shadow(0 0 10px #fff); }
+}
+@keyframes statusChange {
+    0%, 40% { color: #00ff88; text-shadow: 0 0 5px #00ff88; }
+    45%, 80% { color: #ff3366; text-shadow: 0 0 15px #ff3366; }
+    100% { color: #00ff88; text-shadow: 0 0 5px #00ff88;}
+}
+
+/* Worm Anim */
+.anim-worm .network-pc {
+    font-size: 3rem;
+    position: absolute;
+    transition: filter 0.5s;
+}
+.pc1 { top: 30%; left: 15%; filter: grayscale(1); }
+.pc2 { top: 60%; left: 50%; filter: grayscale(1); transform: translate(-50%, 0); }
+.pc3 { top: 30%; right: 15%; filter: grayscale(1); }
+.anim-worm .worm-entity {
+    position: absolute;
+    font-size: 2rem;
+    top: 30%; left: -20%;
+}
+
+#sub_worm:checked ~ .sub-content #pane_worm .worm-entity { animation: wormCrawl 6s infinite linear; }
+#sub_worm:checked ~ .sub-content #pane_worm .pc1 { animation: pcInfect1 6s infinite; }
+#sub_worm:checked ~ .sub-content #pane_worm .pc2 { animation: pcInfect2 6s infinite; }
+#sub_worm:checked ~ .sub-content #pane_worm .pc3 { animation: pcInfect3 6s infinite; }
+
+@keyframes wormCrawl {
+    0%, 10% { top: 30%; left: -20%; opacity: 0; }
+    20%, 30% { top: 30%; left: 15%; opacity: 1; }
+    40%, 50% { top: 60%; left: 50%; opacity: 1; transform: translate(-20%, 0); }
+    60%, 70% { top: 30%; left: 85%; opacity: 1; transform: translate(-80%, 0); }
+    80%, 100% { top: 30%; left: 120%; opacity: 0; }
+}
+@keyframes pcInfect1 { 0%, 15% { filter: grayscale(1); } 20%, 90% { filter: drop-shadow(0 0 15px #00ff88); } 100% { filter: grayscale(1); } }
+@keyframes pcInfect2 { 0%, 35% { filter: grayscale(1); } 40%, 90% { filter: drop-shadow(0 0 15px #00bfff); } 100% { filter: grayscale(1); } }
+@keyframes pcInfect3 { 0%, 55% { filter: grayscale(1); } 60%, 90% { filter: drop-shadow(0 0 15px #bb00ff); } 100% { filter: grayscale(1); } }
+
+/* Trojan Anim */
+.anim-trojan .trojan-box {
+    font-size: 5rem;
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.anim-trojan .trojan-hacker {
+    font-size: 4rem;
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    opacity: 0; z-index: -1;
+}
+.anim-trojan .user-cursor {
+    font-size: 2rem;
+    position: absolute;
+    bottom: 0%; right: 0%;
+}
+
+#sub_trojan:checked ~ .sub-content #pane_trojan .user-cursor { animation: clickCursor 8s infinite ease-in-out; }
+#sub_trojan:checked ~ .sub-content #pane_trojan .trojan-box { animation: openBox 8s infinite; }
+#sub_trojan:checked ~ .sub-content #pane_trojan .trojan-hacker { animation: revealHacker 8s infinite; }
+
+@keyframes clickCursor {
+    0%, 10% { bottom: 0%; right: 0%; opacity: 1; }
+    25%, 35% { bottom: 35%; right: 40%; transform: scale(0.9); opacity: 1; }
+    45%, 100% { bottom: -20%; right: -20%; opacity: 0; }
+}
+@keyframes openBox {
+    0%, 30% { transform: translate(-50%, -50%) scale(1); filter: none; }
+    35%, 45% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); filter: drop-shadow(0 0 20px #00d2ff); }
+    50%, 80% { transform: translate(-50%, -50%) scale(0) rotate(90deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes revealHacker {
+    0%, 45% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); z-index: 10; }
+    50%, 80% { opacity: 1; transform: translate(-50%, -60%) scale(1.5); z-index: 10; filter: drop-shadow(0 0 30px #bb00ff); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); z-index: -1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .attack-body { grid-template-columns: 1fr; }
+    .main-content { flex-direction: column; }
+    .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+    .attack-nav { flex-direction: row; justify-content: center; width: 100%; }
+    .nav-button { flex: 1; min-width: 140px; justify-content: center; }
+    .nav-button::before { height: 4px; width: 100%; top: auto; bottom: 0; transform: scaleX(0); transform-origin: left; }
+    #tab_malware:checked ~ .main-content .nav-button[data-id="malware"]::before,
+    #tab_ransomware:checked ~ .main-content .nav-button[data-id="ransomware"]::before,
+    #tab_mitm:checked ~ .main-content .nav-button[data-id="mitm"]::before,
+    #tab_ddos:checked ~ .main-content .nav-button[data-id="ddos"]::before {
+        transform: scaleX(1);
+    }
+    #tab_malware:checked ~ .main-content .nav-button[data-id="malware"],
+    #tab_ransomware:checked ~ .main-content .nav-button[data-id="ransomware"],
+    #tab_mitm:checked ~ .main-content .nav-button[data-id="mitm"],
+    #tab_ddos:checked ~ .main-content .nav-button[data-id="ddos"] {
+        transform: translateY(-5px);
+    }
+    /* Sub-pane grid collapses to single column on tablets/mobile */
+    .sub-pane {
+        grid-template-columns: 1fr;
+    }
+    .sub-visual .diagram-container {
+        min-height: 260px !important;
+    }
+    /* App header shrinks */
+    .app-header h1 { font-size: 2rem; }
+    .app-header p  { font-size: 1rem; }
+}
+
+/* Connect Main Tabs */
+#tab_malware:checked ~ .main-content .viewer-container #view_malware,
+#tab_ransomware:checked ~ .main-content .viewer-container #view_ransomware,
+#tab_mitm:checked ~ .main-content .viewer-container #view_mitm,
+#tab_ddos:checked ~ .main-content .viewer-container #view_ddos {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    position: relative;
+}
+#tab_malware:checked ~ .main-content .sidebar .nav-button[data-id="malware"]::before,
+#tab_ransomware:checked ~ .main-content .sidebar .nav-button[data-id="ransomware"]::before,
+#tab_mitm:checked ~ .main-content .sidebar .nav-button[data-id="mitm"]::before,
+#tab_ddos:checked ~ .main-content .sidebar .nav-button[data-id="ddos"]::before {
+    transform: scaleY(1);
+}
+@media (max-width: 1024px) {
+    #tab_malware:checked ~ .main-content .sidebar .nav-button[data-id="malware"]::before,
+    #tab_ransomware:checked ~ .main-content .sidebar .nav-button[data-id="ransomware"]::before,
+    #tab_mitm:checked ~ .main-content .sidebar .nav-button[data-id="mitm"]::before,
+    #tab_ddos:checked ~ .main-content .sidebar .nav-button[data-id="ddos"]::before {
+        transform: scaleX(1);
+    }
+}
+#tab_malware:checked ~ .main-content .sidebar .nav-button[data-id="malware"],
+#tab_ransomware:checked ~ .main-content .sidebar .nav-button[data-id="ransomware"],
+#tab_mitm:checked ~ .main-content .sidebar .nav-button[data-id="mitm"],
+#tab_ddos:checked ~ .main-content .sidebar .nav-button[data-id="ddos"] {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+/* MitM Sub Tabs Setup */
+#sub_eviltwin:checked ~ .sub-nav label[for="sub_eviltwin"],
+#sub_arp:checked ~ .sub-nav label[for="sub_arp"],
+#sub_hijack:checked ~ .sub-nav label[for="sub_hijack"] {
+    background: #ffffff;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+#sub_eviltwin:checked ~ .sub-nav label[for="sub_eviltwin"] { border-bottom: 2px solid #ff4c4c; }
+#sub_arp:checked ~ .sub-nav label[for="sub_arp"] { border-bottom: 2px solid #00e676; }
+#sub_hijack:checked ~ .sub-nav label[for="sub_hijack"] { border-bottom: 2px solid #d500f9; }
+
+#sub_eviltwin:checked ~ .sub-content #pane_eviltwin,
+#sub_arp:checked ~ .sub-content #pane_arp,
+#sub_hijack:checked ~ .sub-content #pane_hijack {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    position: relative;
+}
+
+.gradient-eviltwin { background-image: linear-gradient(90deg, #ff4c4c, #ff9900); }
+.gradient-arp { background-image: linear-gradient(90deg, #00e676, #00b0ff); }
+.gradient-hijack { background-image: linear-gradient(90deg, #d500f9, #ff1744); }
+
+#pane_eviltwin .clean-list li { border-left-color: #ff4c4c; }
+#pane_arp .clean-list li { border-left-color: #00e676; }
+#pane_hijack .clean-list li { border-left-color: #d500f9; }
+
+/* EVIL TWIN Anim */
+.anim-eviltwin .user-device { font-size: 3rem; position: absolute; bottom: 10%; left: 10%; }
+.anim-eviltwin .rogue-ap { font-size: 4rem; position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%); filter: drop-shadow(0 0 10px #ff4c4c); }
+.anim-eviltwin .real-ap { font-size: 3rem; position: absolute; top: 10%; right: 10%; filter: grayscale(1); opacity: 0.5; }
+.anim-eviltwin .data-packet { font-size: 1.5rem; position: absolute; bottom: 10%; left: 10%; opacity: 0; }
+
+#sub_eviltwin:checked ~ .sub-content #pane_eviltwin .data-packet { animation: dataSteal 4s infinite; }
+@keyframes dataSteal {
+    0% { bottom: 15%; left: 15%; opacity: 1; transform: scale(1); }
+    40% { bottom: 35%; left: 50%; opacity: 1; transform: scale(1.2) translateX(-50%); }
+    50% { bottom: 35%; left: 50%; opacity: 0; transform: scale(0) translateX(-50%); filter: drop-shadow(0 0 10px #ff4c4c); }
+    100% { opacity: 0; }
+}
+
+/* ARP SPOOFING Anim */
+.anim-arp .router { font-size: 4rem; position: absolute; top: 10%; left: 50%; transform: translateX(-50%); }
+.anim-arp .attacker-pc { font-size: 3rem; position: absolute; bottom: 10%; right: 10%; filter: drop-shadow(0 0 10px #00e676); }
+.anim-arp .target-pc { font-size: 3rem; position: absolute; bottom: 10%; left: 10%; }
+.anim-arp .arp-message { font-size: 1.5rem; position: absolute; bottom: 15%; right: 15%; opacity: 0; }
+
+#sub_arp:checked ~ .sub-content #pane_arp .arp-message { animation: sendArp 4s infinite ease-in-out; }
+@keyframes sendArp {
+    0% { bottom: 15%; right: 15%; opacity: 1; left: auto; }
+    50% { bottom: 15%; left: 15%; opacity: 1; right: auto; }
+    80%, 100% { bottom: 15%; left: 15%; opacity: 0; right: auto; }
+}
+
+/* SESSION HIJACK Anim */
+.anim-hijack .auth-server { font-size: 4rem; position: absolute; top: 10%; right: 10%; }
+.anim-hijack .legit-user { font-size: 3rem; position: absolute; bottom: 10%; left: 10%; }
+.anim-hijack .hijacker { font-size: 3rem; position: absolute; bottom: 10%; right: 10%; filter: drop-shadow(0 0 10px #d500f9); }
+.anim-hijack .session-cookie { font-size: 2rem; position: absolute; bottom: 15%; left: 15%; opacity: 0; }
+
+#sub_hijack:checked ~ .sub-content #pane_hijack .session-cookie { animation: stealCookie 5s infinite; }
+@keyframes stealCookie {
+    0% { bottom: 15%; left: 15%; opacity: 0; }
+    20% { bottom: 15%; left: 15%; opacity: 1; }
+    50% { bottom: 50%; left: 50%; opacity: 1; transform: translateX(-50%); }
+    80% { bottom: 15%; right: 15%; opacity: 1; left: auto; transform: none; }
+    100% { bottom: 15%; right: 15%; opacity: 0; left: auto; }
+}
+
+/* --- Ransomware Sub-Tab Activation --- */
+
+#sub_crypto:checked ~ .sub-nav label[for="sub_crypto"],
+#sub_locker:checked ~ .sub-nav label[for="sub_locker"],
+#sub_raas:checked ~ .sub-nav label[for="sub_raas"] {
+    background: #ffffff;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+#sub_crypto:checked ~ .sub-nav label[for="sub_crypto"]  { border-bottom: 2px solid #ff6b00; }
+#sub_locker:checked ~ .sub-nav label[for="sub_locker"]  { border-bottom: 2px solid #ff0055; }
+#sub_raas:checked   ~ .sub-nav label[for="sub_raas"]    { border-bottom: 2px solid #9d00ff; }
+
+#sub_crypto:checked ~ .sub-content #pane_crypto,
+#sub_locker:checked ~ .sub-content #pane_locker,
+#sub_raas:checked   ~ .sub-content #pane_raas {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    position: relative;
+}
+
+/* --- Gradient Text Colors --- */
+.gradient-crypto  { background-image: linear-gradient(90deg, #ff6b00, #ffcc00); }
+.gradient-locker  { background-image: linear-gradient(90deg, #ff0055, #ff6b00); }
+.gradient-raas    { background-image: linear-gradient(90deg, #9d00ff, #ff0055); }
+
+/* --- List Accent Colors --- */
+#pane_crypto .clean-list li { border-left-color: #ff6b00; }
+#pane_locker .clean-list li { border-left-color: #ff0055; }
+#pane_raas   .clean-list li { border-left-color: #9d00ff; }
+
+/* ============================================================ */
+/* ANIMATION 1: CRYPTO RANSOMWARE — File Encryption             */
+/* ============================================================ */
+.anim-crypto .crypto-file {
+    font-size: 5rem;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+.anim-crypto .crypto-lock {
+    font-size: 3rem;
+    position: absolute;
+    top: 20%; left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+.anim-crypto .crypto-label {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    background: rgba(255, 107, 0, 0.15);
+    border: 1px solid #ff6b00;
+    color: #ff6b00;
+    padding: 5px 14px;
+    border-radius: 4px;
+    opacity: 0;
+    white-space: nowrap;
+}
+.anim-crypto .crypto-key {
+    font-size: 2rem;
+    position: absolute;
+    top: -20%; right: 10%;
+    opacity: 0;
+}
+
+#sub_crypto:checked ~ .sub-content #pane_crypto .crypto-file  { animation: cryptoEncrypt 7s infinite ease-in-out; }
+#sub_crypto:checked ~ .sub-content #pane_crypto .crypto-lock  { animation: lockAppear 7s infinite ease-in-out; }
+#sub_crypto:checked ~ .sub-content #pane_crypto .crypto-label { animation: labelShow 7s infinite ease-in-out; }
+#sub_crypto:checked ~ .sub-content #pane_crypto .crypto-key   { animation: keyFloat 7s infinite ease-in-out; }
+
+@keyframes cryptoEncrypt {
+    0%, 20%  { filter: drop-shadow(0 0 8px #fff); transform: translate(-50%, -50%) scale(1); }
+    40%, 70% { filter: drop-shadow(0 0 20px #ff6b00) sepia(1) hue-rotate(-10deg); transform: translate(-50%, -50%) scale(0.95) rotate(-3deg); }
+    90%, 100%{ filter: drop-shadow(0 0 8px #fff); transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes lockAppear {
+    0%, 20%  { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    35%, 70% { opacity: 1; transform: translateX(-50%) translateY(0); filter: drop-shadow(0 0 15px #ff6b00); }
+    90%, 100%{ opacity: 0; }
+}
+@keyframes labelShow {
+    0%, 30%  { opacity: 0; }
+    45%, 72% { opacity: 1; }
+    85%, 100%{ opacity: 0; }
+}
+@keyframes keyFloat {
+    0%, 25%  { top: -20%; right: 10%; opacity: 0; }
+    40%      { top: 20%;  right: 10%; opacity: 1; }
+    60%      { top: 20%;  right: 55%; opacity: 0.5; transform: scale(0.7); }
+    65%, 100%{ opacity: 0; }
+}
+
+/* ============================================================ */
+/* ANIMATION 2: LOCKER RANSOMWARE — Screen Lock                 */
+/* ============================================================ */
+.anim-locker .locker-screen {
+    font-size: 5rem;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+}
+.anim-locker .locker-overlay {
+    font-size: 4rem;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+.anim-locker .locker-badge {
+    font-size: 2.5rem;
+    position: absolute;
+    top: 5%; left: 5%;
+    opacity: 0;
+}
+.anim-locker .locker-warning {
+    position: absolute;
+    bottom: 15%; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    color: #ff0055;
+    text-shadow: 0 0 15px #ff0055;
+    opacity: 0;
+    white-space: nowrap;
+}
+
+#sub_locker:checked ~ .sub-content #pane_locker .locker-screen  { animation: screenLock 7s infinite ease-in-out; }
+#sub_locker:checked ~ .sub-content #pane_locker .locker-overlay { animation: overlayIn 7s infinite ease-in-out; }
+#sub_locker:checked ~ .sub-content #pane_locker .locker-badge   { animation: badgeSlide 7s infinite ease-in-out; }
+#sub_locker:checked ~ .sub-content #pane_locker .locker-warning { animation: warningPulse 7s infinite ease-in-out; }
+
+@keyframes screenLock {
+    0%, 15%  { filter: none; transform: translate(-50%, -60%) scale(1); }
+    30%, 80% { filter: drop-shadow(0 0 25px #ff0055) grayscale(0.8); transform: translate(-50%, -60%) scale(0.95); }
+    95%, 100%{ filter: none; transform: translate(-50%, -60%) scale(1); }
+}
+@keyframes overlayIn {
+    0%, 20%  { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+    35%, 75% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 20px #ff0055); }
+    90%, 100%{ opacity: 0; }
+}
+@keyframes badgeSlide {
+    0%, 25%  { opacity: 0; top: -10%; left: 5%; }
+    40%, 75% { opacity: 1; top: 5%;   left: 5%; }
+    90%, 100%{ opacity: 0; }
+}
+@keyframes warningPulse {
+    0%, 30%   { opacity: 0; }
+    50%, 70%  { opacity: 1; text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055; }
+    85%, 100% { opacity: 0; }
+}
+
+/* ============================================================ */
+/* ANIMATION 3: RaaS — Developer → Affiliate → Victim           */
+/* ============================================================ */
+.anim-raas .raas-dev {
+    font-size: 3.5rem;
+    position: absolute;
+    top: 15%; left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 12px #9d00ff);
+}
+.anim-raas .raas-affiliate-1 {
+    font-size: 2.5rem;
+    position: absolute;
+    top: 50%; left: 15%;
+}
+.anim-raas .raas-affiliate-2 {
+    font-size: 2.5rem;
+    position: absolute;
+    top: 50%; right: 15%;
+}
+.anim-raas .raas-victim {
+    font-size: 3rem;
+    position: absolute;
+    bottom: 8%; left: 50%;
+    transform: translateX(-50%);
+}
+.anim-raas .raas-bitcoin {
+    font-size: 2rem;
+    font-family: var(--font-heading);
+    font-weight: 900;
+    color: #ffcc00;
+    text-shadow: 0 0 15px #ffcc00;
+    position: absolute;
+    bottom: 15%; left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+#sub_raas:checked ~ .sub-content #pane_raas .raas-affiliate-1 { animation: affiliateLeft 8s infinite ease-in-out; }
+#sub_raas:checked ~ .sub-content #pane_raas .raas-affiliate-2 { animation: affiliateRight 8s infinite ease-in-out; }
+#sub_raas:checked ~ .sub-content #pane_raas .raas-victim      { animation: victimTarget 8s infinite ease-in-out; }
+#sub_raas:checked ~ .sub-content #pane_raas .raas-bitcoin     { animation: bitcoinPay 8s infinite ease-in-out; }
+
+@keyframes affiliateLeft {
+    0%, 10%  { filter: grayscale(1); transform: scale(1); }
+    25%, 50% { filter: drop-shadow(0 0 15px #9d00ff); transform: scale(1.15); }
+    70%, 100%{ filter: grayscale(0.5); transform: scale(1); }
+}
+@keyframes affiliateRight {
+    0%, 20%  { filter: grayscale(1); transform: scale(1); }
+    35%, 55% { filter: drop-shadow(0 0 15px #ff0055); transform: scale(1.15); }
+    75%, 100%{ filter: grayscale(0.5); transform: scale(1); }
+}
+@keyframes victimTarget {
+    0%, 30%  { filter: none; transform: translateX(-50%) scale(1); }
+    50%, 65% { filter: drop-shadow(0 0 20px #ff0055) grayscale(0.6); transform: translateX(-50%) scale(0.9) rotate(-5deg); }
+    80%, 100%{ filter: none; transform: translateX(-50%) scale(1); }
+}
+@keyframes bitcoinPay {
+    0%, 40%  { opacity: 0; bottom: 8%; }
+    55%      { opacity: 1; bottom: 30%; }
+    68%      { opacity: 1; bottom: 50%; left: 35%; }
+    75%      { opacity: 0; bottom: 60%; left: 30%; }
+    100%     { opacity: 0; }
+}
+
+
+/* DDoS Sub Tabs Setup */
+#sub_httpflood:checked ~ .sub-nav label[for="sub_httpflood"],
+#sub_udpflood:checked ~ .sub-nav label[for="sub_udpflood"],
+#sub_synflood:checked ~ .sub-nav label[for="sub_synflood"] {
+    background: #ffffff;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+#sub_httpflood:checked ~ .sub-nav label[for="sub_httpflood"] { border-bottom: 2px solid #ff9100; }
+#sub_udpflood:checked ~ .sub-nav label[for="sub_udpflood"] { border-bottom: 2px solid #ffea00; }
+#sub_synflood:checked ~ .sub-nav label[for="sub_synflood"] { border-bottom: 2px solid #ff3d00; }
+
+#sub_httpflood:checked ~ .sub-content #pane_httpflood,
+#sub_udpflood:checked ~ .sub-content #pane_udpflood,
+#sub_synflood:checked ~ .sub-content #pane_synflood {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    position: relative;
+}
+
+.gradient-httpflood { background-image: linear-gradient(90deg, #ff9100, #ffea00); }
+.gradient-udpflood { background-image: linear-gradient(90deg, #ffea00, #00e676); }
+.gradient-synflood { background-image: linear-gradient(90deg, #ff3d00, #d500f9); }
+
+#pane_httpflood .clean-list li { border-left-color: #ff9100; }
+#pane_udpflood .clean-list li { border-left-color: #ffea00; }
+#pane_synflood .clean-list li { border-left-color: #ff3d00; }
+
+/* HTTP FLOOD Anim */
+.anim-httpflood .target-server { font-size: 4rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.anim-httpflood .request { font-size: 1.5rem; position: absolute; opacity: 0; }
+
+#sub_httpflood:checked ~ .sub-content #pane_httpflood .req1 { animation: httpFlood 2s infinite 0s; }
+#sub_httpflood:checked ~ .sub-content #pane_httpflood .req2 { animation: httpFlood 2s infinite 0.5s; }
+#sub_httpflood:checked ~ .sub-content #pane_httpflood .req3 { animation: httpFlood 2s infinite 1s; }
+#sub_httpflood:checked ~ .sub-content #pane_httpflood .req4 { animation: httpFlood 2s infinite 1.5s; }
+
+@keyframes httpFlood {
+    0% { top: 0%; left: 0%; opacity: 0; transform: scale(0.5); }
+    50% { top: 45%; left: 45%; opacity: 1; transform: scale(1.2); }
+    100% { top: 50%; left: 50%; opacity: 0; transform: scale(0); }
+}
+
+/* UDP FLOOD Anim */
+.anim-udpflood .target-host { font-size: 4rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.anim-udpflood .udp-packet { font-size: 1.5rem; position: absolute; opacity: 0; }
+
+#sub_udpflood:checked ~ .sub-content #pane_udpflood .p1 { animation: udpShoot 1.5s infinite 0s; }
+#sub_udpflood:checked ~ .sub-content #pane_udpflood .p2 { animation: udpShoot 1.5s infinite 0.4s; }
+#sub_udpflood:checked ~ .sub-content #pane_udpflood .p3 { animation: udpShoot 1.5s infinite 0.8s; }
+#sub_udpflood:checked ~ .sub-content #pane_udpflood .p4 { animation: udpShoot 1.5s infinite 1.2s; }
+
+@keyframes udpShoot {
+    0% { top: 90%; left: 10%; opacity: 1; }
+    80% { top: 50%; left: 50%; opacity: 1; transform: scale(1.5); }
+    100% { top: 50%; left: 50%; opacity: 0; transform: scale(0); }
+}
+
+/* SYN FLOOD Anim */
+.anim-synflood .syn-server { font-size: 4rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.anim-synflood .syn-half { font-size: 2rem; position: absolute; opacity: 0; }
+
+#sub_synflood:checked ~ .sub-content #pane_synflood .syn1 { animation: synWait 3s infinite 0s; }
+#sub_synflood:checked ~ .sub-content #pane_synflood .syn2 { animation: synWait 3s infinite 1s; }
+#sub_synflood:checked ~ .sub-content #pane_synflood .syn3 { animation: synWait 3s infinite 2s; }
+
+@keyframes synWait {
+    0% { top: 50%; left: -10%; opacity: 1; }
+    40% { top: 50%; left: 40%; opacity: 1; }
+    90% { top: 50%; left: 40%; opacity: 1; filter: hue-rotate(90deg); }
+    100% { top: 50%; left: 40%; opacity: 0; }
+}
+
+/* ============================================================ */
+/* MOBILE RESPONSIVE — 768px and below                           */
+/* ============================================================ */
+@media (max-width: 768px) {
+    .dashboard {
+        padding: 1rem;
+    }
+
+    .app-header h1 {
+        font-size: 1.5rem;
+        letter-spacing: -0.5px;
+    }
+    .app-header p {
+        font-size: 0.9rem;
+    }
+
+    /* Nav buttons stack 2-per-row on phones */
+    .attack-nav {
+        flex-wrap: wrap;
+    }
+    .nav-button {
+        flex: 1 1 40%;
+        min-width: 120px;
+        font-size: 0.9rem;
+        padding: 0.9rem 0.75rem;
+    }
+
+    /* Sub tabs */
+    .sub-nav {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .sub-btn {
+        flex: 1 1 40%;
+        font-size: 0.85rem;
+        padding: 0.65rem 0.5rem;
+    }
+
+    /* Viewer */
+    .attack-view {
+        padding: 1.25rem;
+    }
+
+    .attack-header h2 {
+        font-size: 1.8rem;
+    }
+
+    /* Sub-pane always single column */
+    .sub-pane {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+
+    /* Diagram containers more compact */
+    .sub-visual .diagram-container,
+    .diagram-container {
+        min-height: 200px !important;
+        height: 200px !important;
+    }
+
+    /* Shrink animation emoji sizes for small screens */
+    .anim-crypto .crypto-file,
+    .anim-locker .locker-screen,
+    .anim-raas .raas-dev { font-size: 3rem; }
+
+    .anim-crypto .crypto-lock { font-size: 2rem; }
+    .anim-locker .locker-overlay { font-size: 2.5rem; }
+    .anim-locker .locker-badge { font-size: 1.5rem; }
+    .anim-raas .raas-affiliate-1,
+    .anim-raas .raas-affiliate-2 { font-size: 1.8rem; }
+    .anim-raas .raas-victim { font-size: 2rem; }
+    .anim-raas .raas-bitcoin { font-size: 1.5rem; }
+
+    .gradient-text { font-size: 1.5rem; }
+    .intro-text { font-size: 0.95rem; }
+    .sub-info p { font-size: 0.95rem; }
+}
+

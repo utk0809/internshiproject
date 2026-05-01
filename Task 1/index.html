@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Introduction to Steganography - The Art of Hidden Writing." />
+  <title>Steganography | The Art of Hidden Writing</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Orbitron:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="logo">STEGANO<span style="color:var(--text-color)">GRAPHY</span></div>
+    <div class="nav-links">
+      <a href="#intro">Intro</a>
+      <a href="#types">Types</a>
+      <a href="#advantages">Advantages</a>
+      <a href="#impact">Impact</a>
+      <a href="http://localhost:3000" class="btn-login" target="_blank">Login</a>
+    </div>
+  </nav>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress" class="scroll-progress"></div>
+
+  <header class="hero">
+    <div class="hero-content">
+      <h1>HIDE IN PLAIN SIGHT</h1>
+      <p>Introduction to Steganography - A method of hiding information within something that appears completely normal.
+      </p>
+      <a href="#intro" class="btn-primary">Discover More</a>
+    </div>
+  </header>
+
+
+  <section id="intro" class="section">
+    <div class="container">
+      <h2 class="section-title">Introduction to Steganography</h2>
+      <div class="content-split">
+        <div class="text">
+          <p><strong>Steganography</strong> is a method of hiding information within something that appears completely
+            normal, like a picture, song, video, or document.</p>
+          <p>Unlike encryption, which makes data unreadable, steganography aims to keep the existence of the hidden data
+            secret. In cybersecurity, it is used by both defenders and attackers. Defenders might hide watermarks or
+            ownership marks, while attackers can hide malware or stolen data inside harmless-looking files or network
+            traffic.</p>
+
+          <h3 style="margin-top:2rem">How It Works</h3>
+          <p>When a normal user opens an image on social media or in an email, they only see the visible part of the
+            image. Behind the scenes, the image is made up of a long sequence of bytes.</p>
+          <p>Many of these bytes can be slightly changed without affecting how the image looks. This small amount of
+            change is what steganography uses. Digital steganography manipulates bits and bytes so that only software
+            that knows the method can recover the hidden information.</p>
+        </div>
+        <div class="visual" id="demo-visual"
+          style="background: url('/steg_image.png') no-repeat center center/cover; position: relative; overflow: hidden; min-height: 400px; padding: 0;">
+          <div id="demo-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.1); transition: background 0.5s;">
+          </div>
+
+          <div id="demo-interactive"
+            style="position: relative; z-index: 2; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; padding: 2rem;">
+            <p id="hidden-msg"
+              style="opacity: 0; color: #fff; font-weight: bold; text-align: center; margin-bottom: 2rem; min-height: 3rem; transform: translateY(20px); transition: all 0.5s; text-shadow: 0 2px 10px rgba(0,0,0,0.8); font-size: 1.2rem; background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+              This image contains hidden data using LSB steganography.<br>
+              Access authorized users only.</p>
+            <button id="reveal-btn" class="btn-primary" style="box-shadow: 0 4px 15px rgba(0,0,0,0.5);">Reveal Hidden
+              Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="types" class="section">
+    <div class="container">
+      <h2 class="section-title">Main Types & Techniques</h2>
+
+      <div style="margin-bottom: 4rem; max-width: 800px; margin-left: auto; margin-right: auto; text-align: center;">
+        <p>There are several main types of steganography. Images are common, large, and naturally noisy, making them the
+          most popular carriers for both research and attacks.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card card-image-bg"
+          style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('/image_stego_icon.png') no-repeat center center/cover; padding: 3rem 2rem; color: white; display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px;">
+          <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            Image Steganography</h3>
+          <p style="color: #f0f0f0; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">Hides data in pictures. A classic method is
+            replacing the least significant bits (LSB) of color values. This allows the overall color of each pixel to
+            stay the same to the human eye, but each pixel also holds bits of the hidden message.</p>
+        </div>
+        <div class="card card-image-bg"
+          style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('/audio_stego_icon.png') no-repeat center center/cover; padding: 3rem 2rem; color: white; display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px;">
+          <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            Audio Steganography</h3>
+          <p style="color: #f0f0f0; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">Uses sound in a similar way. Hidden data
+            can be placed in the signal's phase, as a low-level echo, spread across the spectrum, or embedded into the
+            least significant bits of audio samples.</p>
+        </div>
+        <div class="card card-image-bg"
+          style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('/video_stego_icon.png') no-repeat center center/cover; padding: 3rem 2rem; color: white; display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px;">
+          <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            Video Steganography</h3>
+          <p style="color: #f0f0f0; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">Combines image and audio methods across
+            many frames. Because video files are large, they provide plenty of space to carry keys, configuration data,
+            or even chunks of binary data.</p>
+        </div>
+        <div class="card card-image-bg"
+          style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('/text_network_stego_icon.png') no-repeat center center/cover; padding: 3rem 2rem; color: white; display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px;">
+          <h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            Text & Network</h3>
+          <p style="color: #f0f0f0; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">Hiding data by altering spacing, using
+            capitalization patterns, or encoding in network header fields. The traffic looks like normal browsing, but
+            carries an extra layer of meaning.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="advantages" class="section">
+    <div class="container">
+      <h2 class="section-title">Advantages</h2>
+      <div class="content-split">
+        <div class="visual visual-image-bg"
+          style="background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.9)), url('/business_stego_icon.png') no-repeat center center/cover; position: relative;">
+          <div
+            style="text-align:center; padding: 2rem; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;">
+            <h4 style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+              Legitimate Use Cases</h4>
+            <ul
+              style="text-align: left; color: #f0f0f0; list-style: none; padding: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+              <li style="margin-bottom: 5px;">• Digital Watermarking</li>
+              <li style="margin-bottom: 5px;">• Copyright Protection</li>
+              <li style="margin-bottom: 5px;">• Secure Transmission</li>
+              <li>• Tracking Leaks</li>
+            </ul>
+          </div>
+        </div>
+        <div class="text">
+          <h3>Why Use It?</h3>
+          <p>From a defensive and business perspective, steganography has clear advantages. Its biggest benefit is that
+            it hides sensitive content without drawing attention.</p>
+          <p>A legal document, design draft, or medical image can contain invisible watermarks or tracking markers
+            without showing any obvious signs. Companies use these capabilities to embed ownership information and mark
+            documents with hidden IDs linked to access logs.</p>
+          <p>In industries like healthcare, finance, or law, this supports compliance and investigations by showing who
+            had access to which records and when.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="impact" class="section impact-section">
+    <div class="container">
+      <h2 class="section-title">Impact & Risks</h2>
+
+      <div class="content-split">
+        <div class="text">
+          <h3 class="danger-text" style="color:#ff0070">Malicious Use in Real Attacks</h3>
+          <p>Security research has found many malware families (AdGholas, Cerber, Zbot) that use images to hide code.
+            Attackers avoid URL filters and antivirus engines by hiding payloads in banner ads or icons.</p>
+
+          <h3 style="margin-top: 2rem;">Impact on Business if Ignored</h3>
+          <p>If a company doesn't use steganography in its security plan, it loses a helpful level of protection.
+            Without hidden watermarks, it's harder to prove where a leaked document came from.</p>
+          <p><strong>Compliance Issue:</strong> Data protection rules require steps to track leaks. Missing these
+            controls can lead to bigger penalties and lost trust.</p>
+        </div>
+
+        <div class="card"
+          style="background: linear-gradient(to bottom, rgba(255, 0, 0, 0.2), rgba(0,0,0,0.9)), url('/steg_image.png') no-repeat center center/cover; padding: 3rem 2rem; color: white; border: 2px solid var(--accent-color); min-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;">
+          <h3
+            style="color: var(--accent-color); font-size: 1.8rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+            ⚠️ Security Risks</h3>
+          <ul class="impact-list" style="margin: 0; padding: 0; list-style: none;">
+            <li style="margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8);"><strong>Data
+                Exfiltration:</strong> Smuggling proprietary data.</li>
+            <li style="margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8);"><strong>Malware Comm:</strong> C2
+              bypassing firewalls.</li>
+            <li style="margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8);"><strong>Espionage:</strong>
+              Covert info stealing.</li>
+            <li style="margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.8);"><strong>Reputation:</strong> Loss
+              of customer trust.</li>
+            <li style="text-shadow: 0 1px 2px rgba(0,0,0,0.8);"><strong>Legal:</strong> Compliance failures.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        style="margin-top: 4rem; text-align: center; background: var(--bg-secondary); padding: 3rem; border-radius: 20px;">
+        <h3 style="color: var(--primary-color);">Defense Measures</h3>
+        <p style="max-width: 800px; margin: 1rem auto;">Even if using it, companies must guard against attacks. Defenses
+          focus on behavior analysis (sandboxing), monitoring network traffic for anomalies, and enforcing clear
+          policies on untrusted files.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h4>STEGANOGRAPHY</h4>
+          <p>Securing the invisible future.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#types">Types</a></li>
+            <li><a href="#advantages">Advantages</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="#">info@stegano.security</a></li>
+            <li><a href="#">+91 9876543210</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2026 Steganography Web. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollToTop" class="scroll-to-top" title="Back to Top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </button>
+
+  <script type="module" src="./src/main.js"></script>
+  <script>
+    // Update login link dynamically based on environment
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginBtn = document.querySelector('.btn-login');
+      if (loginBtn) {
+        // Use Vite's import.meta.env
+        const authUrl = import.meta.env.VITE_AUTH_APP_URL || 'http://localhost:3000';
+        loginBtn.href = authUrl;
+      }
+    });
+  </script>
+</body>
+
+</html>

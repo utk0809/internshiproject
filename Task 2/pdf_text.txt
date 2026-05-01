@@ -1,0 +1,47 @@
+--- PAGE 1 ---
+Cyber Security Practical Project: Phishing
+ Simulation + Awareness
+This project is designed to help students understand the concept of Social Engineering and
+Phishing attacks through a safe educational simulation. Students will create a demo phishing login
+page and an awareness message to show how attackers trick users and how people can stay safe.
+Project Concept
+Social Engineering and Phishing Simulation
+Learning Objectives
+ Understand Social Engineering attacks
+ Learn how phishing websites work
+ Understand URL spoofing techniques
+ Create awareness about cyber security threats
+Project Tasks
+Students must complete the following tasks:
+1. Create a Fake Login Page (Demo only)
+- Design a simple login page similar to a popular website (example: email, social media etc.).
+- The page should include username/email and password fields.
+2. Awareness Message After Submit
+- When the user clicks the login button, do NOT store credentials.
+- Redirect the user to an awareness page explaining phishing attacks.
+- The page should explain how attackers trick people and how to stay safe.
+3. URL Spoofing Demonstration
+- Show how attackers create URLs that look similar to real websites.
+- Example: using subdomains or slightly changed spellings.
+Hosting Requirement (MilesWeb)
+Students must host this project using MilesWeb hosting.
+Requirements:
+ Purchase or use an existing MilesWeb hosting plan.
+ Create a subdomain in MilesWeb.
+ Upload the phishing simulation project to the subdomain.
+
+--- PAGE 2 ---
+ Example format: phishing-demo.yourdomain.com
+Important Ethical Note
+This project is strictly for EDUCATIONAL PURPOSES only.
+Students must not use this project to collect real passwords or perform real phishing attacks.
+The goal is to create awareness and understand how cyber criminals operate.
+Expected Output
+ A working demo phishing login page
+ Awareness message page after login submission
+ Hosted on MilesWeb subdomain
+ Students should be able to explain:
+- Social Engineering
+- URL Spoofing
+- Importance of User Awareness
+

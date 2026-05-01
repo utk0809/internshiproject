@@ -1,0 +1,842 @@
+/* 
+   Combined Stylesheet 
+   1. Instagram Perfect Replica Dark Mode (Task 1)
+   2. Cyber Security Professional Dashboard (Task 2)
+*/
+
+/* =========================================================================
+   1. INSTAGRAM REPLICA DARK DESKTOP STYLES
+   ========================================================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.ig-dark-body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0b0f14;
+    color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.ig-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.ig-main-desktop {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    width: 100%;
+    align-items: stretch;
+}
+
+.ig-desktop-layout {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+/* Left Side - Marketing */
+.ig-marketing-side {
+    flex: 1.5;
+    background-color: #090c10;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+    position: relative;
+}
+
+.ig-marketing-logo {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+}
+
+.ig-marketing-text {
+    margin-bottom: 24px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.ig-marketing-text h1 {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.gradient-text {
+    background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ig-marketing-graphic {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.hero-image {
+    max-width: 320px;
+    object-fit: contain;
+}
+
+.ig-phones-container {
+    background-image: url('https://static.cdninstagram.com/images/instagram/xig/homepage/phones/home-phones-2x.png');
+    background-position: 0 0;
+    background-size: 468.32px 634.15px;
+    flex-basis: 468.32px;
+    height: 634.15px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 875px) {
+    .ig-marketing-side {
+        display: none;
+    }
+}
+
+.ig-screenshot {
+    position: absolute;
+    right: 63px;
+    top: 27px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
+    height: 538.84px;
+    width: 250px;
+}
+
+.ig-active-screenshot {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+}
+
+.ig-prev-screenshot {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+/* Right Side - Login Panel */
+.ig-login-side {
+    flex: 1;
+    background-color: #0f141a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+}
+
+.ig-login-panel {
+    width: 100%;
+    max-width: 360px;
+}
+
+.ig-form-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: left;
+    margin-left: 5px;
+    color: #f5f5f5;
+}
+
+.ig-login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.ig-input-group {
+    margin: 0 0 12px;
+    width: 100%;
+    position: relative;
+}
+
+.ig-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #0f141a;
+    border: 1px solid #363a40;
+    border-radius: 8px;
+    position: relative;
+    width: 100%;
+    height: 46px;
+    transition: border-color 0.2s;
+    overflow: hidden;
+}
+
+.ig-input-wrapper:focus-within {
+    border-color: #fff;
+    border-width: 2px;
+}
+
+.ig-input-wrapper:focus-within .ig-label-text {
+    color: #fff;
+}
+
+.ig-input-label {
+    display: flex;
+    height: 100%;
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.ig-label-text {
+    color: #737373;
+    font-size: 14px;
+    height: 46px;
+    left: 16px;
+    line-height: 46px;
+    position: absolute;
+    right: 0;
+    text-overflow: ellipsis;
+    transform-origin: left;
+    transition: transform ease-out .1s;
+    user-select: none;
+    white-space: nowrap;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.ig-label-text.active {
+    transform: scale(.7) translateY(-12px);
+    color: #a8a8a8;
+}
+
+.ig-input-wrapper:focus-within .ig-label-text.active {
+    color: #fff;
+}
+
+.ig-input {
+    background: transparent;
+    color: #f5f5f5;
+    border: 0;
+    flex: 1;
+    margin: 0;
+    outline: none;
+    padding: 12px 16px 4px 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 18px;
+    width: 100%;
+    transition: padding ease-out .1s;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.ig-input.has-value {
+    padding: 18px 16px 2px 16px !important;
+    font-size: 14px;
+}
+
+.ig-show-pwd {
+    padding: 0 16px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    color: #f5f5f5;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+}
+
+.ig-show-pwd:hover {
+    color: #a8a8a8;
+}
+
+.ig-submit-group {
+    margin-top: 6px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.ig-submit-btn {
+    background-color: #004d8a;
+    border: none;
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-weight: 600;
+    padding: 12px 16px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.ig-submit-btn:disabled {
+    background-color: #003666;
+    cursor: default;
+}
+
+.ig-submit-btn:hover:not(:disabled) {
+    background-color: #005fba;
+    color: #fff;
+}
+
+.ig-forgot-pwd {
+    color: #e0e0e0;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    display: block;
+    margin-bottom: 40px;
+}
+
+.ig-forgot-pwd:hover {
+    color: #fff;
+}
+
+.ig-secondary-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.ig-secondary-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.ig-fb-btn {
+    background: transparent;
+    border: 1px solid #363a40;
+    color: #e0e0e0;
+}
+
+.ig-fb-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.ig-fb-icon {
+    display: inline-block;
+    margin-right: 8px;
+    background-image: url('https://static.cdninstagram.com/rsrc.php/v3/yM/r/8n91YnfPq0s.png');
+    background-position: -414px -259px;
+    background-size: 440px 411px;
+    width: 17px;
+    height: 17px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+.ig-create-btn {
+    background: transparent;
+    border: 1px solid #363a40;
+    color: #3ba2ff;
+}
+
+.ig-create-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.ig-meta-logo {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+
+/* Footer */
+.ig-dark-footer {
+    padding: 0 16px;
+    padding-bottom: 20px;
+    padding-top: 24px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background: #0b0f14;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ig-footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.ig-footer-links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.ig-footer-links a {
+    color: #737373;
+    display: block;
+    margin: 0 8px 12px;
+    text-decoration: none;
+}
+
+.ig-footer-links a:hover {
+    text-decoration: underline;
+}
+
+.ig-footer-copyright {
+    color: #737373;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
+.ig-language {
+    position: relative;
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.ig-language select {
+    background: transparent;
+    border: 0;
+    color: #737373;
+    cursor: pointer;
+    font-size: 12px;
+    outline: none;
+    appearance: none;
+    padding-right: 16px;
+    margin-right: -16px;
+    z-index: 1;
+}
+
+
+/* =========================================================================
+   2. CYBER SECURITY AWARENESS STYLES (DARK PREMIUM THEME)
+   ========================================================================= */
+
+body.sec-body {
+    background-color: #0b0f19;
+    font-family: 'Outfit', sans-serif;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+.sec-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.sec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 40px;
+}
+
+.sec-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sec-logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+.sec-brand-text h1 {
+    margin: 0;
+    font-size: 20px;
+    color: #f8fafc;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.sec-brand-text span {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sec-badge-ethical {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sec-hero-alert {
+    background: linear-gradient(to right, rgba(239, 68, 68, 0.1), transparent);
+    border-left: 4px solid #ef4444;
+    border-radius: 0 16px 16px 0;
+    padding: 30px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    backdrop-filter: blur(10px);
+}
+
+.sec-hero-icon {
+    font-size: 32px;
+    color: #ef4444;
+}
+
+.sec-hero-content h2 {
+    margin: 0 0 12px 0;
+    color: #f8fafc;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.sec-hero-content p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.sec-hero-content strong {
+    color: #fca5a5;
+}
+
+.sec-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    padding-bottom: 60px;
+}
+
+@media (max-width: 900px) {
+    .sec-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sec-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+}
+
+.sec-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sec-module {
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.sec-module-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.sec-mod-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.sec-module-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #f1f5f9;
+    font-weight: 600;
+}
+
+.sec-url-showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.sec-url-card {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.sec-url-status {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.valid .sec-url-status {
+    color: #10b981;
+}
+
+.invalid .sec-url-status {
+    color: #ef4444;
+}
+
+.sec-url-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    background: #0b0f19;
+    padding: 12px 16px;
+    border-radius: 6px;
+    color: #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.valid .sec-url-text span {
+    color: #64748b;
+}
+
+.invalid .sec-url-text span {
+    color: #64748b;
+}
+
+.invalid .sec-url-text {
+    color: #fca5a5;
+}
+
+.sec-url-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.sec-defense-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sec-defense-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.sec-defense-list i {
+    color: #8b5cf6;
+    font-size: 20px;
+    margin-top: 4px;
+}
+
+.sec-defense-list strong {
+    color: #e2e8f0;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.sec-defense-list div {
+    font-size: 15px;
+    color: #94a3b8;
+}
+
+.sec-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sec-widget {
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.sec-widget h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #f8fafc;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sec-widget h3 i {
+    color: #64748b;
+}
+
+.sec-widget p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.sec-widget code {
+    background: #0f172a;
+    color: #3b82f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.sec-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sec-task {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px;
+    background: #0f172a;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.sec-task.completed .sec-task-icon {
+    color: #10b981;
+}
+
+.sec-task.pending {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.sec-task.pending .sec-task-icon {
+    color: #3b82f6;
+}
+
+.sec-task-info h4 {
+    margin: 0 0 4px 0;
+    color: #f1f5f9;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sec-task-info span {
+    color: #64748b;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.sec-btn-action {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #3b82f6;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.sec-btn-action:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.sec-btn-ghost {
+    display: block;
+    width: 100%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.sec-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}

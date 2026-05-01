@@ -1,0 +1,48 @@
+Cyber Security Practical Project: Hash Generator &
+ Hash Comparison Tool
+This project helps students understand the concept of hashing in cyber security. Students will build
+a simple web tool that converts text into a SHA-256 hash and allows users to compare two hashes.
+The project must be hosted online using MilesWeb hosting and a MilesWeb subdomain.
+Project Concept
+Understanding hashing, data integrity, and password storage using SHA-256.
+Learning Objectives
+ Understand the concept of Hashing
+ Learn the difference between Hashing and Encryption
+ Understand how hashing ensures data integrity
+ Learn the concept of password storage using hashes
+Project Tasks
+1. Text Input Field
+Users should be able to enter any text message.
+2. Generate SHA-256 Hash
+Create a button that converts the entered text into a SHA-256 hash.
+3. Hash Output Display
+Display the generated hash value on the screen.
+4. Hash Comparison Tool
+Provide two input fields where users can enter two hash values.
+5. Compare Button
+When users click compare, the tool should display:
+- "Match" if both hashes are identical
+- "Not Match" if hashes are different
+Hosting Requirement (MilesWeb)
+Students must host this project using MilesWeb hosting.
+Steps:
+ Use a MilesWeb hosting account
+
+ Create a subdomain using the MilesWeb control panel
+ Upload the project files to the subdomain
+Example URL:
+hash-demo.yourdomain.com
+Concepts Students Should Be Able to Explain
+ Hashing vs Encryption difference
+ Data integrity concept
+ Password storage using hashes
+ SHA-256 hashing algorithm basics
+Expected Output
+ Working SHA-256 hash generator
+ Text input field
+ Generated hash output
+ Hash comparison feature
+ Live demo hosted on a MilesWeb subdomain
+Important Note
+This project is for educational purposes only and is designed to help students understand
+fundamental cyber security concepts.

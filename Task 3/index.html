@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHA-256 Crypto Lab | Hashing Education Portal</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --bg-card: rgba(15, 23, 42, 0.8);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #c084fc;
+            --accent-success: #4ade80;
+            --accent-error: #f43f5e;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(192, 132, 252, 0.08) 0%, transparent 40%);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            color: var(--text-dim);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-xl);
+            transition: transform 0.3s ease;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-icon { color: var(--accent-primary); }
+
+        .form-group { margin-bottom: 1.5rem; width: 100%; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary), #0ea5e9);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        button:hover { transform: translateY(-2px); }
+
+        button.compare-btn { background: linear-gradient(135deg, var(--accent-secondary), #9333ea); }
+
+        .result-box {
+            margin-top: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .hash-text {
+            font-family: 'JetBrains Mono', monospace;
+            word-break: break-all;
+            color: var(--accent-primary);
+            font-size: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-match { color: var(--accent-success); }
+        .status-nomatch { color: var(--accent-error); }
+
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            text-align: left;
+        }
+
+        .theory-item {
+            background: rgba(255,255,255,0.03);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .theory-item h3 { color: var(--accent-primary); margin-bottom: 0.75rem; font-size: 1.1rem; }
+        .theory-item p { font-size: 0.9rem; color: var(--text-dim); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer { margin-top: 4rem; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
+
+        @media (max-width: 600px) { h1 { font-size: 2.25rem; } .card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SHA-256 Crypto Lab</h1>
+        <p>Data Integrity & Hashing Demonstration</p>
+    </header>
+
+    <div class="container">
+        <!-- Section 1: Theory Lab -->
+        <section class="card">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon" style="color: var(--accent-secondary);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0.5-5z"/><path d="M6.5 17.5L20 17.5"/></svg>
+                Core Hashing Theory
+            </h2>
+            <div class="theory-grid">
+                <div class="theory-item">
+                    <h3>What is Hashing?</h3>
+                    <p>Hashing converts any input into a unique fixed-length string. It's like a digital fingerprint—even a tiny change in data creates a totally different hash.</p>
+                </div>
+                <div class="theory-item">
+                    <h3>One-Way Principle</h3>
+                    <p>Cryptographic hashes are "one-way." You can generate a hash from text, but you can <b>never</b> reverse a hash back into the original text.</p>
+                </div>
+                <div class="theory-item">
+                    <h3>Data Integrity</h3>
+                    <p>Hashing is used to verify that data hasn't been changed. If a file's hash matches the original, you know it's safe and untampered.</p>
+                </div>
+                <div class="theory-item">
+                    <h3>Collision Resistance</h3>
+                    <p>A strong algorithm like SHA-256 is built so that it's mathematically impossible for two different inputs to produce the same hash.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Generation -->
+        <section class="card">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                Hash Generator tool
+            </h2>
+            <div class="form-group">
+                <label for="inputText">Input Message</label>
+                <input type="text" id="inputText" placeholder="Type text here to generate its fingerprint...">
+            </div>
+            <button onclick="generateHash()">Generate SHA-256</button>
+            <div id="genResult" class="result-box">
+                <p style="text-transform: uppercase; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.5rem;">Resulting Hash:</p>
+                <div class="hash-text" id="outputText"></div>
+            </div>
+        </section>
+
+        <!-- Section 3: Comparison -->
+        <section class="card">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                Comparison Lab
+            </h2>
+            <div class="form-group">
+                <label>Hash Value 1</label>
+                <input type="text" id="hashInput1" placeholder="Paste hash 1...">
+            </div>
+            <div class="form-group">
+                <label>Hash Value 2</label>
+                <input type="text" id="hashInput2" placeholder="Paste hash 2...">
+            </div>
+            <button class="compare-btn" onclick="compareHashes()">Verify Integrity</button>
+            <div id="compResult" class="result-box">
+                <div id="statusBadge" class="status-badge"></div>
+                <p id="statusDesc" style="color: var(--text-dim); font-size: 0.9rem;"></p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Cybersecurity Educational Lab | Hashing & Integrity Focus</p>
+    </footer>
+
+    <script>
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function generateHash() {
+            const input = document.getElementById('inputText').value;
+            if (!input.trim()) return alert("Enter some text!");
+            const hash = await sha256(input);
+            document.getElementById('outputText').innerText = hash;
+            document.getElementById('genResult').style.display = 'block';
+        }
+
+        function compareHashes() {
+            const h1 = document.getElementById('hashInput1').value.trim();
+            const h2 = document.getElementById('hashInput2').value.trim();
+            const resultBox = document.getElementById('compResult');
+            if (!h1 || !h2) return alert("Paste both hashes!");
+
+            resultBox.style.display = 'block';
+            if (h1 === h2) {
+                document.getElementById('statusBadge').innerHTML = '✔ MATCH';
+                document.getElementById('statusBadge').className = 'status-badge status-match';
+                document.getElementById('statusDesc').innerText = 'Data Integrity Confirmed. No changes detected.';
+            } else {
+                document.getElementById('statusBadge').innerHTML = '✖ MISMATCH';
+                document.getElementById('statusBadge').className = 'status-badge status-nomatch';
+                document.getElementById('statusDesc').innerText = 'Alert: Hashes do not match. Potential data tampering.';
+            }
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>

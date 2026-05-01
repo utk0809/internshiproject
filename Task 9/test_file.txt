@@ -1,0 +1,2 @@
+This is a test file for the secure file upload demo.
+It was created by Antigravity to verify the "Additional" project tasks.

@@ -1,16 +1,16 @@
-# 🛡️ Cybersecurity Project Dashboard
+# Cybersecurity Project Dashboard
 
 A comprehensive suite of attack and defense simulations designed to demonstrate common web vulnerabilities, cryptographic utilities, and security concepts. This project serves as a central hub for various cybersecurity tasks, providing a hands-on learning environment for ethical hacking and security analysis.
 
-## 🚀 Overview
+##  Overview
 
 The **Cybersecurity Project Dashboard** is a curated collection of 9 distinct tasks, each focusing on a specific area of cybersecurity. From steganography to complex injection attacks, this dashboard provides a unified interface to explore and understand modern security threats.
 
-## 🛠️ Included Projects
+##  Included Projects
 
 | Project | Title | Description |
 | :--- | :--- | :--- |
-| **Project 1** | [Steganography Suite](https://steno.tanmay.pro/) | Complete Image Steganography Platform. |
+| **Task 1** | [Steganography Suite](./Task%201/index.html) | Complete Image Steganography Platform. |
 | **Task 2** | **Phishing Simulation** | Demonstration of phishing awareness, URL spoofing, and data collection. |
 | **Task 3** | **Hash Generator** | Cryptographic utility for MD5, SHA-1, and SHA-256 algorithms. |
 | **Task 4** | **XSS Demo** | Cross-Site Scripting attack vectors and mitigation strategies. |
@@ -20,7 +20,7 @@ The **Cybersecurity Project Dashboard** is a curated collection of 9 distinct ta
 | **Task 8** | **Dictionary Attack** | Simulating password breaches using dictionary and brute-force techniques. |
 | **Task 9** | **File Upload Sim** | Demonstrating file upload vulnerabilities and web shell risks. |
 
-## ⚙️ Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -51,7 +51,7 @@ php -S localhost:8000
 ```
 Then, navigate to `http://localhost:8000` in your web browser.
 
-## 📁 Project Structure
+##  Project Structure
 
 - `index.html`: The main dashboard interface.
 - `style.css`: Premium styling for the dashboard.
@@ -59,7 +59,7 @@ Then, navigate to `http://localhost:8000` in your web browser.
 - `Task X/`: Individual directories containing the source code for each simulation.
 - `Task X.pdf`: Detailed documentation/reports for each task.
 
-## ⚠️ Disclaimer
+##  Disclaimer
 
 These simulations are created for **educational purposes only**. Do not use any of the techniques demonstrated here on systems you do not have explicit permission to test. The goal is to promote security awareness and defensive coding practices.
 
