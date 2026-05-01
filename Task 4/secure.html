@@ -1,40 +1,11 @@
-<?php
-// ============================================================
-// SECURE COMMENT SYSTEM — PROTECTED WORKSPACE
-// CS04 | Cyber Sanskar Internship | XSS Attack Simulation Lab
-// ============================================================
-session_start();
 
-if (!isset($_SESSION['secure_comments'])) {
-    $_SESSION['secure_comments'] = [];
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear'])) {
-    $_SESSION['secure_comments'] = [];
-}
-
-// Store secure comment submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['comment']) && !isset($_POST['clear'])) {
-    // Basic trim for clean data (sanitization happens on output for demonstration)
-    $_SESSION['secure_comments'][] = [
-        'name'        => trim($_POST['name']),
-        'comment'     => trim($_POST['comment']),
-        'attack_type' => isset($_POST['attack_type']) ? $_POST['attack_type'] : 'Custom Payload',
-        'time'        => date('Y-m-d H:i:s'),
-    ];
-}
-
-$injection_count = count($_SESSION['secure_comments'] ?? []);
-
-// Provide attacks for JS (as a string or let JS handle it independently to match vulnerable.php)
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure | XSS Simulation Lab — CS04</title>
-    <!-- Use index.php's light theme -->
+    <!-- Use index.html's light theme -->
     <link rel="stylesheet" href="style-light.css?v=4">
     <!-- Load Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
@@ -122,12 +93,12 @@ $injection_count = count($_SESSION['secure_comments'] ?? []);
     <div class="mesh-bg"></div>
 
     <div class="container">
-        <!-- Dashboard / Navigation consistent with index.php -->
+        <!-- Dashboard / Navigation consistent with index.html -->
         <nav class="navbar" style="padding-top: 2rem;">
             <div class="nav-brand" style="color: #10b981;"><span>SECURE</span> WORKSPACE</div>
             <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="vulnerable.php" style="color: #ef4444;">Vulnerable Setup</a>
+                <a href="index.html">Dashboard</a>
+                <a href="vulnerable.html" style="color: #ef4444;">Vulnerable Setup</a>
             </div>
         </nav>
 
@@ -175,7 +146,7 @@ $injection_count = count($_SESSION['secure_comments'] ?? []);
         <!-- Stats Row -->
         <div class="stats-row">
             <div class="stat-box">
-                <div class="stat-value"><?php echo $injection_count; ?></div>
+                <div class="stat-value"></div>
                 <div class="stat-label">Injections Blocked</div>
             </div>
             <div class="stat-box">
@@ -331,52 +302,36 @@ $injection_count = count($_SESSION['secure_comments'] ?? []);
                 </div>
 
                 <!-- SECURE_INJECT -->
-                <?php if (empty($_SESSION['secure_comments'])): ?>
+                
                     <div style="text-align:center;padding:4rem 0;color:var(--text-secondary);">
                         <i data-feather="shield-main" style="width:48px;height:48px;opacity:0.2;margin-bottom:1rem;color:#10b981;"></i>
                         <p style="font-size:1rem;font-weight:500;">System pristine.<br>Submit a payload to witness sanitization.</p>
                     </div>
-                <?php else: ?>
+                
                     <div class="comments-list">
-                        <?php
-                        $badge_map = [
-                            'Cookie Harvester'       => ['#10b981', '🍪'],
-                            'Keylogger'              => ['#10b981', '⌨️'],
-                            'Page Defacement'        => ['#10b981', '💀'],
-                            'Phishing Overlay'       => ['#10b981', '🎣'],
-                            'Session Hijacker'       => ['#10b981', '🔓'],
-                            'DOM Manipulation'       => ['#10b981', '🔀'],
-                            'Browser Fingerprinting' => ['#10b981', '🎯'],
-                            'Custom Payload'         => ['#10b981', '✏️'],
-                        ];
-                        foreach (array_reverse($_SESSION['secure_comments']) as $c):
-                            $at = isset($c['attack_type']) ? $c['attack_type'] : 'Custom Payload';
-                            $clr = isset($badge_map[$at]) ? $badge_map[$at][0] : '#10b981';
-                            $ico = isset($badge_map[$at]) ? $badge_map[$at][1] : '⚡';
-                            $avatar = $c['name'] ? strtoupper(substr($c['name'], 0, 1)) : '?';
-                        ?>
+                        
                         <div class="comment-item sec-border">
                             <div class="comment-avatar">
-                                <?php echo htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8'); ?>
+                                
                             </div>
                             <div class="comment-content">
                                 <div class="comment-meta">
                                     <!-- SECURE: Outputting escaped input reliably via htmlspecialchars -->
-                                    <span class="comment-author"><?php echo htmlspecialchars($c['name'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <span class="comment-author"></span>
                                     <span class="attack-type-badge">
-                                        <?php echo $ico . ' ' . htmlspecialchars($at, ENT_QUOTES, 'UTF-8'); ?>
+                                        
                                     </span>
-                                    <span class="comment-time"><?php echo htmlspecialchars($c['time'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <span class="comment-time"></span>
                                 </div>
                                 <div class="comment-payload-box">
                                     <!-- SECURE: Outputting escaped input securely via htmlspecialchars -->
-                                    <?php echo nl2br(htmlspecialchars($c['comment'], ENT_QUOTES, 'UTF-8')); ?>
+                                    
                                 </div>
                             </div>
                         </div>
-                        <?php endforeach; ?>
+                        
                     </div>
-                <?php endif; ?>
+                
             </div>
         </div>
     </div>
@@ -391,9 +346,9 @@ $injection_count = count($_SESSION['secure_comments'] ?? []);
                 An educational project for understanding and mitigating web vulnerabilities.
             </p>
             <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
-                <a href="index.php" style="color: #64748b; text-decoration: none; font-weight: 600;">Home</a>
-                <a href="vulnerable.php" style="color: #64748b; text-decoration: none; font-weight: 600;">Vulnerable</a>
-                <a href="secure.php" style="color: #10b981; text-decoration: none; font-weight: 600;">Secure</a>
+                <a href="index.html" style="color: #64748b; text-decoration: none; font-weight: 600;">Home</a>
+                <a href="vulnerable.html" style="color: #64748b; text-decoration: none; font-weight: 600;">Vulnerable</a>
+                <a href="secure.html" style="color: #10b981; text-decoration: none; font-weight: 600;">Secure</a>
             </div>
         </div>
     </footer>
@@ -513,3 +468,5 @@ $injection_count = count($_SESSION['secure_comments'] ?? []);
     </script>
 </body>
 </html>
+
+

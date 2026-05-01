@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vulnerable Login — SQL Injection Demo</title>
+  <meta name="description" content="Simulated vulnerable login page to demonstrate SQL Injection authentication bypass." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Highlight injection in the query display */
+    .inj-highlight { color:#f87171; background:rgba(239,68,68,.15); border-radius:3px; padding:0 2px; }
+    .sql-kw  { color:#c084fc; font-weight:600; }
+    .sql-str { color:#34d399; }
+    .sql-cmt { color:#6b7280; }
+    .hint-box {
+      background:rgba(124,58,237,.06);
+      border:1px dashed rgba(124,58,237,.3);
+      border-radius:var(--radius-sm);
+      padding:0.9rem 1.1rem;
+      font-size:0.83rem;
+      color:var(--text-muted);
+      margin-bottom:1.2rem;
+    }
+    .hint-box code { color:var(--pink); background:rgba(236,72,153,.1); padding:1px 5px; border-radius:4px; }
+    .explain-section {
+      margin-top: 1.4rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.2rem;
+    }
+    .explain-section h4 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--purple);
+      margin-bottom: 0.8rem;
+      letter-spacing: .05em;
+    }
+    .query-annotated { line-height: 2; }
+    .result-panel { display: none; }
+    .result-panel.show { display: block; }
+  </style>
+</head>
+<body>
+
+
+<!-- ── Navbar ──────────────────────────────────────────────── -->
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">
+    <span>SQL</span><em>INJECT</em>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="index.html#how-it-works">HOW IT WORKS</a></li>
+    <li><a href="secure.html">SECURE VERSION</a></li>
+    <li><a href="login.html" class="btn-outline-nav" style="color:var(--red)!important;border-color:var(--red);">⚠️ VULNERABLE</a></li>
+  </ul>
+</nav>
+
+<!-- SQL Injection Attack Simulation Lab -->
+<div class="login-wrapper" style="margin-bottom: 0; padding-bottom: 0;">
+  <div class="attack-lab" style="width: 100%; max-width: 900px; margin: 2rem auto 0 auto;">
+    <h2 class="section-title gradient-text" style="text-align:center;">SQL Injection Attack Simulation Lab</h2>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Click an attack button to automatically test common SQL Injection payloads.</p>
+    
+    <div class="attack-grid">
+      <div class="attack-card">
+        <h4>1️⃣ User Bypass</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>' OR 1=1 --</code> in Username</p>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('\' OR 1=1 --', 'anything')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card" style="border-left-color: var(--purple);">
+        <h4 style="color:var(--purple);">2️⃣ Pass Bypass</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>' OR '1'='1</code> in Password</p>
+        <button type="button" class="btn btn-danger btn-sm" style="background:var(--purple);" onclick="prefill('admin', '\' OR \'1\'=\'1')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card">
+        <h4>3️⃣ Comment Inject</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>admin' --</code></p>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('admin\' --', 'wrong')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card">
+        <h4>4️⃣ Data Leak</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>' UNION SELECT...</code></p>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('\' UNION SELECT username,password FROM users --', 'anything')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card" style="border-left-color: var(--green);">
+        <h4 style="color:var(--green);">5️⃣ Secure Demo</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">See it blocked!</p>
+        <a href="secure.html" class="btn btn-success btn-sm" style="text-align: center; text-decoration: none;">🛡️ Open Safe Demo</a>
+      </div>
+
+      <div class="attack-card" style="border-left-color: var(--green);">
+        <h4 style="color:var(--green);">6️⃣ Parameterized</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">See how it's done</p>
+        <a href="secure.html" class="btn btn-success btn-sm" style="text-align: center; text-decoration: none;">🛡️ Open Safe Demo</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Login Panel ──────────────────────────────────────────── -->
+<div class="login-wrapper" style="padding-top: 0; min-height: auto;">
+  <div style="width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
+
+    <!-- Left: Login Form -->
+    <div class="login-card">
+      <span class="login-badge">⚠️ Vulnerable System</span>
+      <h2>Simulated Login</h2>
+      <p class="subtitle">This form is intentionally vulnerable to SQL Injection for educational purposes.</p>
+
+      <div class="hint-box">
+        💡 Hardcoded credentials: <code>admin</code> / <code>admin123</code><br>
+        💉 Try injection: <code>' OR 1=1 --</code> as username
+      </div>
+
+      <div class="quick-fill" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button type="button" class="btn btn-success btn-sm" onclick="prefill('admin', 'admin123')">✅ Normal Login</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('\' OR 1=1 --', 'anything')">💉 SQL Inject</button>
+        <button type="button" class="btn btn-sm" style="background:#6b7280;color:#fff;" onclick="prefill('wrong_user', 'wrong_pass')">❌ Wrong Creds</button>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter username or payload…" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter password…" />
+        </div>
+        <button type="submit" class="btn btn-primary w-full">LOGIN →</button>
+      </form>
+
+      <!-- Result Panel -->
+      <div id="resultPanel" class="result-panel show">
+        <div id="resultTitle" class="result-title"></div>
+        <div id="resultMsg" style="font-size:0.88rem; color:var(--text-muted); line-height:1.5;"></div>
+
+        <div id="explainSection" class="explain-section" style="display:none;">
+          <h4>💡 EDUCATIONAL BREAKDOWN</h4>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:.6rem;">The injection payload "broke out" of the SQL string, changing the query logic:</p>
+          <div class="query-box" style="font-size: 0.73rem; background: rgba(0,0,0,0.2);">
+            <span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> users 
+            <span class="sql-kw">WHERE</span> username = '<span class="inj-highlight" id="explainUser"></span>' 
+            <span class="sql-kw">AND</span> password = '<span class="inj-highlight" id="explainPass"></span>'
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-side">
+      <div class="card">
+        <h3 style="font-size:0.9rem;margin-bottom:.8rem;color:var(--purple); text-transform:uppercase;">SQL Execution Trace</h3>
+        
+        <div class="mb-3">
+            <p style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.3rem;">1. Original Query Template</p>
+            <div class="query-box" style="opacity:0.7; font-size: 0.75rem;">SELECT * FROM users WHERE username='[username]' AND password='[password]';</div>
+        </div>
+
+        <div class="mb-3">
+            <p style="font-size:0.72rem; font-weight:700; color:var(--pink); text-transform:uppercase; margin-bottom:0.3rem;">2. Injected Query String</p>
+            <div id="queryDisplay" class="query-box" style="font-size: 0.75rem;">Submit the form to see the trace.</div>
+        </div>
+
+        <div id="resultsSection" class="mb-3" style="display:none;">
+            <p style="font-size:0.72rem; font-weight:700; color:var(--green); text-transform:uppercase; margin-bottom:0.3rem;">3. Data Results (Returned Rows)</p>
+            <div class="results-table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>username</th>
+                            <th>password</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody"></tbody>
+                </table>
+            </div>
+            <p id="rowCountLabel" style="font-size:0.7rem; color:var(--green); margin-top:0.4rem;"></p>
+        </div>
+
+        <div id="initialTraceMsg" class="alert alert-info">
+          <span class="alert-icon">ℹ️</span>
+          <div style="font-size:0.8rem;">Submit the form to see the SQL execution and returned data results.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Built for <strong>educational purposes only</strong> · SQL Injection Demo · <span style="color:var(--pink);">No real database used</span></p>
+</footer>
+
+<script>
+  const users_data = [
+    { username: 'admin', password: 'admin123' },
+    { username: 'john_doe', password: 'password123' },
+    { username: 'jane_smith', password: 'secure_pass_2024' }
+  ];
+
+  function prefill(u, p) {
+    document.getElementById('username').value = u;
+    document.getElementById('password').value = p;
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    
+    processLogin(user, pass);
+  });
+
+  function processLogin(user, pass) {
+    const u_low = user.toLowerCase().trim();
+    const p_low = pass.toLowerCase().trim();
+    
+    let found_users = [];
+    let is_injection = false;
+    let custom_msg = '';
+    
+    const true_patterns = ["' or 1=1", "' or 'a'='a", "' or '1'='1", "' or true"];
+    let has_true = false;
+    for (let tp of true_patterns) {
+      if (u_low.includes(tp) || p_low.includes(tp)) {
+        has_true = true;
+        break;
+      }
+    }
+
+    if (has_true) {
+      is_injection = true;
+      found_users = [...users_data];
+      custom_msg = "The 'OR 1=1' condition made the entire WHERE clause evaluate to TRUE. The database returned every single row it found.";
+    } 
+    else if (u_low.includes("' --") || u_low.includes("' #")) {
+      is_injection = true;
+      const user_part = user.split("'")[0].trim();
+      if (user_part !== "") {
+        found_users = users_data.filter(u => u.username.toLowerCase() === user_part.toLowerCase());
+      } else {
+        found_users = [...users_data];
+      }
+      custom_msg = "The '--' or '#' symbols commented out the rest of the query, so the database never even checked the password.";
+    }
+    else if (u_low.includes("' union select") || p_low.includes("' union select")) {
+      is_injection = true;
+      found_users = [...users_data];
+      custom_msg = "A UNION SELECT statement was used to merge other table data (simulated as the entire user list here) into the results.";
+    }
+    else {
+      found_users = users_data.filter(u => u.username === user && u.password === pass);
+    }
+
+    // Update UI
+    const resultPanel = document.getElementById('resultPanel');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMsg = document.getElementById('resultMsg');
+    const explainSection = document.getElementById('explainSection');
+    
+    resultPanel.className = 'result-panel show';
+    explainSection.style.display = 'none';
+
+    if (is_injection) {
+      resultPanel.classList.add('bypass');
+      resultTitle.innerText = '⚠️ BYPASS SUCCESSFUL!';
+      resultMsg.innerText = custom_msg;
+      explainSection.style.display = 'block';
+      document.getElementById('explainUser').innerText = user;
+      document.getElementById('explainPass').innerText = pass;
+    } else if (found_users.length > 0) {
+      resultPanel.classList.add('granted');
+      resultTitle.innerText = '✅ ACCESS GRANTED';
+      resultMsg.innerText = 'Match found! Welcome back.';
+    } else if (user !== '' || pass !== '') {
+      resultPanel.classList.add('denied');
+      resultTitle.innerText = '❌ ACCESS DENIED';
+      resultMsg.innerText = 'Zero rows returned. Invalid credentials.';
+    }
+
+    // Update Trace
+    document.getElementById('initialTraceMsg').style.display = 'none';
+    const queryDisplay = document.getElementById('queryDisplay');
+    let sql = `SELECT * FROM users WHERE username='${user}' AND password='${pass}';`;
+    
+    // Simple syntax highlighting
+    sql = sql.replace(/\b(SELECT|FROM|WHERE|AND|OR|UNION)\b/g, '<span class="sql-kw">$1</span>');
+    sql = sql.replace(user, `<span class="inj-highlight">${user}</span>`);
+    sql = sql.replace(pass, `<span class="inj-highlight">${pass}</span>`);
+    queryDisplay.innerHTML = sql;
+
+    // Update Table
+    const resultsSection = document.getElementById('resultsSection');
+    const tableBody = document.getElementById('resultsTableBody');
+    const rowCountLabel = document.getElementById('rowCountLabel');
+    
+    tableBody.innerHTML = '';
+    if (found_users.length > 0) {
+      resultsSection.style.display = 'block';
+      found_users.forEach(u => {
+        const row = `<tr><td>${u.username}</td><td><code style="color:var(--text-muted);">${u.password}</code></td></tr>`;
+        tableBody.innerHTML += row;
+      });
+      rowCountLabel.innerText = `✔ ${found_users.length} row(s) returned.`;
+    } else {
+      resultsSection.style.display = 'block';
+      tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--red);">0 rows returned.</td></tr>';
+      rowCountLabel.innerText = '';
+    }
+  }
+</script>
+
+</body>
+</html>

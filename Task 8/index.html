@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary Attack Simulator | Interactive Lab</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .js-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0.8;
+            font-family: 'Fira Code', monospace;
+        }
+        .terminal-content {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .btn-start {
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-start:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-start:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+        }
+        .match-card {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid #00ff9d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .test-word { color: #facc15; }
+        .status-success { color: #00ff9d; font-weight: bold; }
+        .status-error { color: #f87171; }
+    </style>
+</head>
+<body>
+    <div class="js-badge">STATIC JS ENGINE</div>
+    <div class="container">
+        <h1>Dictionary Attack Simulation</h1>
+        <p class="description">Educational simulation using JavaScript to demonstrate wordlist attacks. Designed for static hosting.</p>
+
+        <div class="simulation-panel">
+            <div class="control-card">
+                <div class="input-group">
+                    <span class="input-label">Target Password</span>
+                    <div id="target-display" class="password-display">********</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span id="word-count" class="stat-value">15</span>
+                        <span class="stat-label">Words</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">JS</span>
+                        <span class="stat-label">Engine</span>
+                    </div>
+                </div>
+
+                <button id="startBtn" class="btn-start" style="width: 100%;" onclick="startSimulation()">Start Simulation</button>
+                <button id="resetBtn" class="btn-start" style="width: 100%; margin-top: 1rem; background: #6b7280; display: none;" onclick="resetSimulation()">Reset</button>
+            </div>
+
+            <div class="terminal-card">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="terminal-content" id="terminal-log">
+                    <div class="log-line">> Simulation Engine Ready.</div>
+                    <div class="log-line">> Awaiting user command...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="resultCard" class="match-card">
+            <h2 id="resultTitle" style="margin-bottom: 10px;"></h2>
+            <p id="resultWord" style="margin-bottom: 5px;"></p>
+            <p id="resultAttempts" style="margin-bottom: 5px;"></p>
+            <p id="resultTime" style="margin-bottom: 15px;"></p>
+        </div>
+    </div>
+
+    <div class="container awareness-container">
+        <h2>Understanding Password Security</h2>
+        <p class="description">Learn how a Dictionary Attack works and how to protect yourself.</p>
+        
+        <div class="awareness-section">
+            <div class="awareness-card feature">
+                <div class="icon">📖</div>
+                <h3>What is a Dictionary Attack?</h3>
+                <p>A dictionary attack is like trying every key on a huge keychain until one opens the door. Hackers use a massive list of common words, names, and patterns (a "dictionary") to guess your password. If your password is in their list, they're in!</p>
+            </div>
+            
+            <div class="awareness-card risk">
+                <div class="icon">⚠️</div>
+                <h3>The Risk of Weak Passwords</h3>
+                <p>Using passwords like <strong>"123456"</strong> or <strong>"password"</strong> is incredibly dangerous. Hackers program their tools to try these first. A simple password can be cracked within milliseconds.</p>
+            </div>
+        </div>
+        
+        <div class="best-practices-card">
+            <h3>🛡️ Best Practices for Strong Passwords</h3>
+            <ul class="practices-list">
+                <li><strong>Mix it up:</strong> Use uppercase and lowercase letters.</li>
+                <li><strong>Add variety:</strong> Include numbers and special characters like <code>@ # $ %</code>.</li>
+                <li><strong>Be unique:</strong> Avoid common words, pet names, or birthdates.</li>
+                <li><strong>Go long:</strong> A password should ideally be at least 12 characters long.</li>
+            </ul>
+        </div>
+        
+        <div class="warning-banner">
+            <strong>Stay Safe:</strong> Use strong, unique passwords for every account to keep your digital life secure!
+        </div>
+    </div>
+
+    <script>
+        const wordlist = [
+            "password", "123456", "admin", "guest", "welcome",
+            "qwerty", "letmein", "secret", "football", "superman",
+            "dragon", "master", "shadow", "hunter", "justice"
+        ];
+        const targetPassword = "superman";
+        
+        const terminal = document.getElementById('terminal-log');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultCard = document.getElementById('resultCard');
+
+        function addLog(message, type = '') {
+            const line = document.createElement('div');
+            line.className = 'log-line ' + type;
+            line.innerHTML = message;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        async function startSimulation() {
+            startBtn.disabled = true;
+            terminal.innerHTML = '';
+            resultCard.style.display = 'none';
+            
+            addLog('> Initializing JS Simulation Engine...');
+            addLog('> Target system: Node-Alpha-7');
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Add progress bar
+            const progressWrapper = document.createElement('div');
+            progressWrapper.className = 'progress-wrapper';
+            progressWrapper.style.marginBottom = '20px';
+            progressWrapper.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span class="input-label">Attack Progress</span>
+                    <span class="input-label" style="color: #38bdf8;" id="progress-text">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="attack-progress" style="width: 0%; transition: width 0.3s ease; height: 10px; background: #38bdf8; border-radius: 5px;"></div>
+                </div>
+            `;
+            terminal.appendChild(progressWrapper);
+
+            const startTime = performance.now();
+            let attempts = 0;
+            let foundMatch = null;
+
+            for (let i = 0; i < wordlist.length; i++) {
+                const word = wordlist[i];
+                attempts++;
+                const isMatch = (word === targetPassword);
+                const percent = Math.round((attempts / wordlist.length) * 100);
+
+                // Update UI
+                document.getElementById('attack-progress').style.width = percent + '%';
+                document.getElementById('progress-text').innerText = percent + '%';
+
+                const statusStr = isMatch ? '<span class="status-success">[ MATCH FOUND ]</span>' : '<span class="status-error">[ DENIED ]</span>';
+                addLog(`<span class="prompt">></span> Testing: <span class="test-word">${word.padEnd(10, ' ')}</span>... ${statusStr}`);
+
+                if (isMatch) {
+                    foundMatch = word;
+                    break;
+                }
+                await new Promise(r => setTimeout(r, 300));
+            }
+
+            const endTime = performance.now();
+            const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+            if (foundMatch) {
+                addLog('<br><div class="log-line success">> System breached successfully with: ' + foundMatch + '</div>', 'success');
+                showResult('BREACH SUCCESSFUL', foundMatch, attempts, timeTaken, '#00ff9d');
+            } else {
+                addLog('<br><div class="log-line error">> Dictionary exhausted. Attack failed.</div>', 'error');
+                showResult('ATTACK FAILED', 'None', attempts, timeTaken, '#f87171');
+            }
+
+            resetBtn.style.display = 'block';
+        }
+
+        function showResult(title, word, attempts, time, color) {
+            resultCard.style.display = 'block';
+            resultCard.style.borderColor = color;
+            document.getElementById('resultTitle').innerText = title;
+            document.getElementById('resultTitle').style.color = color;
+            document.getElementById('resultWord').innerHTML = `• Password found: <strong>${word}</strong>`;
+            document.getElementById('resultAttempts').innerHTML = `• Number of attempts: <strong>${attempts}</strong>`;
+            document.getElementById('resultTime').innerHTML = `• Time taken: <strong>${time} seconds</strong>`;
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetSimulation() {
+            startBtn.disabled = false;
+            resetBtn.style.display = 'none';
+            resultCard.style.display = 'none';
+            terminal.innerHTML = '<div class="log-line">> PHP Backend Ready.</div><div class="log-line">> Awaiting user command...</div>';
+            document.getElementById('target-display').innerText = '********';
+        }
+    </script>
+</body>
+</html>

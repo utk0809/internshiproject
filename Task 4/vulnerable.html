@@ -1,38 +1,11 @@
-<?php
-// ============================================================
-// VULNERABLE COMMENT SYSTEM — INTENTIONALLY INSECURE
-// CS04 | Cyber Sanskar Internship | XSS Attack Simulation Lab
-// EDUCATIONAL USE ONLY — DO NOT DEPLOY IN PRODUCTION
-// ============================================================
-session_start();
 
-if (!isset($_SESSION['vulnerable_comments'])) {
-    $_SESSION['vulnerable_comments'] = [];
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear'])) {
-    $_SESSION['vulnerable_comments'] = [];
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['comment']) && !isset($_POST['clear'])) {
-    // VULNERABLE: storing raw input with zero sanitization — intentional
-    $_SESSION['vulnerable_comments'][] = [
-        'name' => $_POST['name'],
-        'comment' => $_POST['comment'],
-        'attack_type' => isset($_POST['attack_type']) ? $_POST['attack_type'] : 'Custom Payload',
-        'time' => date('Y-m-d H:i:s'),
-    ];
-}
-
-$injection_count = count($_SESSION['vulnerable_comments'] ?? []);
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vulnerable | XSS Simulation Lab — CS04</title>
-    <!-- Use index.php's light theme -->
+    <!-- Use index.html's light theme -->
     <link rel="stylesheet" href="style-light.css?v=4">
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
@@ -193,12 +166,12 @@ $injection_count = count($_SESSION['vulnerable_comments'] ?? []);
     <div class="mesh-bg"></div>
 
     <div class="container">
-        <!-- Dashboard / Navigation consistent with index.php -->
+        <!-- Dashboard / Navigation consistent with index.html -->
         <nav class="navbar" style="padding-top: 2rem;">
             <div class="nav-brand" style="color: #ef4444;"><span>VULNERABLE</span> WORKSPACE</div>
             <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="secure.php" style="color: #10b981;">Secure Setup</a>
+                <a href="index.html">Dashboard</a>
+                <a href="secure.html" style="color: #10b981;">Secure Setup</a>
             </div>
         </nav>
 
@@ -216,7 +189,7 @@ $injection_count = count($_SESSION['vulnerable_comments'] ?? []);
         <!-- Stats Row -->
         <div class="stats-row">
             <div class="stat-box">
-                <div class="stat-value"><?php echo $injection_count; ?></div>
+                <div class="stat-value"></div>
                 <div class="stat-label">Injections Stored</div>
             </div>
             <div class="stat-box">
@@ -368,55 +341,36 @@ $injection_count = count($_SESSION['vulnerable_comments'] ?? []);
                 </div>
 
                 <!-- PHP renders comments here; server.py also injects via <!-- XSS_INJECT --> marker -->
-                <?php if (empty($_SESSION['vulnerable_comments'])): ?>
+                
                     <div style="text-align:center;padding:3rem 0;color:var(--text-secondary);">
                         <i data-feather="inbox" style="width:36px;height:36px;opacity:0.3;margin-bottom:1rem;"></i>
                         <p style="font-size:0.9rem;">No injections yet.<br>Select an attack and fire a payload.</p>
                     </div>
-                <?php
-else: ?>
+                
                     <div class="comments-list">
-                        <?php
-    $badge_map = [
-        'Cookie Harvester' => ['#ef4444', '🍪'],
-        'Keylogger' => ['#f59e0b', '⌨️'],
-        'Page Defacement' => ['#dc2626', '💀'],
-        'Phishing Overlay' => ['#ec4899', '🎣'],
-        'Session Hijacker' => ['#8b5cf6', '🔓'],
-        'DOM Manipulation' => ['#f97316', '🔀'],
-        'Browser Fingerprinting' => ['#06b6d4', '🎯'],
-        'Custom Payload' => ['#94a3b8', '✏️'],
-    ];
-    foreach (array_reverse($_SESSION['vulnerable_comments']) as $c):
-        $at = isset($c['attack_type']) ? $c['attack_type'] : 'Custom Payload';
-        $clr = isset($badge_map[$at]) ? $badge_map[$at][0] : '#94a3b8';
-        $ico = isset($badge_map[$at]) ? $badge_map[$at][1] : '⚡';
-        $avatar = $c['name'] ? strtoupper(substr($c['name'], 0, 1)) : '?';
-?>
-                        <div class="comment-item vuln-border" style="--vuln-clr:<?php echo $clr; ?>">
+                        
+                        <div class="comment-item vuln-border" style="--vuln-clr:">
                             <div class="comment-avatar" style="background:linear-gradient(135deg,#b91c1c,#7f1d1d);flex-shrink:0;">
-                                <?php echo htmlspecialchars($avatar); ?>
+                                
                             </div>
                             <div class="comment-content" style="flex:1;min-width:0;">
                                 <div class="comment-meta" style="flex-wrap:wrap;gap:0.4rem;">
                                     <!-- VULNERABLE: Raw echo — no htmlspecialchars -->
-                                    <span class="comment-author"><?php echo $c['name']; ?></span>
-                                    <span class="attack-type-badge" style="border:1px solid <?php echo $clr; ?>44;">
-                                        <?php echo $ico . ' ' . htmlspecialchars($at); ?>
+                                    <span class="comment-author"></span>
+                                    <span class="attack-type-badge" style="border:1px solid 44;">
+                                        
                                     </span>
-                                    <span class="comment-time" style="margin-left:auto;"><?php echo $c['time']; ?></span>
+                                    <span class="comment-time" style="margin-left:auto;"></span>
                                 </div>
-                                <div class="comment-payload-box" style="--vuln-clr:<?php echo $clr; ?>;border-color:<?php echo $clr; ?>;">
+                                <div class="comment-payload-box" style="--vuln-clr:;border-color:;">
                                     <!-- VULNERABLE: Raw echo executes injected scripts -->
-                                    <?php echo $c['comment']; ?>
+                                    
                                 </div>
                             </div>
                         </div>
-                        <?php
-    endforeach; ?>
+                        
                     </div>
-                <?php
-endif; ?>
+                
                 <!-- XSS_INJECT -->
             </div>
         </div>
@@ -432,9 +386,9 @@ endif; ?>
                 An educational project for understanding and mitigating web vulnerabilities.
             </p>
             <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
-                <a href="index.php" style="color: #64748b; text-decoration: none; font-weight: 600;">Home</a>
-                <a href="vulnerable.php" style="color: #ef4444; text-decoration: none; font-weight: 600;">Vulnerable</a>
-                <a href="secure.php" style="color: #64748b; text-decoration: none; font-weight: 600;">Secure</a>
+                <a href="index.html" style="color: #64748b; text-decoration: none; font-weight: 600;">Home</a>
+                <a href="vulnerable.html" style="color: #ef4444; text-decoration: none; font-weight: 600;">Vulnerable</a>
+                <a href="secure.html" style="color: #64748b; text-decoration: none; font-weight: 600;">Secure</a>
             </div>
         </div>
     </footer>
@@ -557,3 +511,5 @@ endif; ?>
     </script>
 </body>
 </html>
+
+

@@ -1,44 +1,3 @@
-<?php
-$uploadMessage = '';
-$messageClass = '';
-$uploadedFileName = '';
-
-// Check if form was submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    $targetDir = "uploads/";
-    
-    // Ensure the uploads directory exists
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
-    }
-    
-    // Check if a file was selected
-    if (isset($_FILES['fileToUpload']) && $_FILES['fileToUpload']['error'] === UPLOAD_ERR_OK) {
-        $fileName = basename($_FILES["fileToUpload"]["name"]);
-        $targetFilePath = $targetDir . $fileName;
-        
-        // TASK A: INSECURE UPLOAD (Allows ANY file type)
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFilePath)) {
-            $uploadMessage = "FILE TRANSMITTED SUCCESSFULLY! ALERT: System is currently running in VULNERABLE mode.";
-            $messageClass = "success";
-            $uploadedFileName = htmlspecialchars($fileName);
-        } else {
-            $uploadMessage = "CRITICAL ERROR: Failed to move the uploaded file. Check server permissions.";
-            $messageClass = "error";
-        }
-    } else {
-        $uploadMessage = "INPUT ERROR: Please select a valid file to intercept.";
-        $messageClass = "error";
-        
-        if(isset($_FILES['fileToUpload'])) {
-            switch ($_FILES['fileToUpload']['error']) {
-                case UPLOAD_ERR_INI_SIZE: $uploadMessage = "PAYLOAD OVERSIZE: File exceeds server limits."; break;
-                case UPLOAD_ERR_NO_FILE: $uploadMessage = "EMPTY HANDSHAKE: No file detected in the request."; break;
-            }
-        }
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
 <div class="container">
     <div class="nav-tabs">
-        <a href="index.php" class="nav-tab active">PART A: INSECURE</a>
-        <a href="secure.php" class="nav-tab">PART B: SECURE</a>
+        <a href="index.html" class="nav-tab active">PART A: INSECURE</a>
+        <a href="secure.html" class="nav-tab">PART B: SECURE</a>
     </div>
 
     <div class="header">
@@ -66,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     <div class="card">
         <div class="educational-panel">
             <h3><span style="border: 1px solid var(--accent-purple); border-radius: 4px; padding: 0 4px; margin-right: 4px;">!</span> MISSION BRIEFING</h3>
-            <p>This sequence demonstrates an <strong>unprotected</strong> file upload interface. The system accepts any file extension, including <code>.php</code>, <code>.html</code>, or <code>.exe</code>. In a real-world breach, an attacker would upload a web shell here to gain total control of the host.</p>
+            <p>This sequence demonstrates an <strong>unprotected</strong> file upload interface. The system accepts any file extension, including <code>.html</code>, <code>.html</code>, or <code>.exe</code>. In a real-world breach, an attacker would upload a web shell here to gain total control of the host.</p>
         </div>
 
-        <form action="index.php" method="POST" enctype="multipart/form-data" class="upload-form">
+        <form id="uploadForm" class="upload-form">
             <div class="file-input-wrapper">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem; opacity: 0.5;">
                     <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke="var(--accent-purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -78,12 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     Drop Payload or Click to Browse
                 </div>
                 <input type="file" name="fileToUpload" id="fileToUpload" class="file-input">
-                <div id="selected-file-label">
+                <div id="selected-file-label" style="display:none;">
                     <span id="selected-file-name" style="background: rgba(236,72,153,0.1); padding: 4px 12px; border-radius: 4px; color: var(--accent-pink);"></span>
                 </div>
             </div>
             
-            <button type="submit" name="submit" class="upload-btn">
+            <button type="submit" class="upload-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M13 2v7h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -92,17 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             </button>
         </form>
 
-        <?php if (!empty($uploadMessage)): ?>
-            <div class="message <?php echo $messageClass; ?>">
-                <div style="font-family: var(--font-heading); font-size: 0.7rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase;">LAB STATUS:</div>
-                <div style="font-size: 0.9rem;"><?php echo $uploadMessage; ?></div>
-                <?php if (!empty($uploadedFileName)): ?>
-                    <div class="uploaded-filename">
-                        <strong>LOCATED:</strong> <?php echo $uploadedFileName; ?>
-                    </div>
-                <?php endif; ?>
+        <div id="statusMessage" class="message" style="display:none;">
+            <div style="font-family: var(--font-heading); font-size: 0.7rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase;">LAB STATUS:</div>
+            <div id="messageText" style="font-size: 0.9rem;"></div>
+            <div id="uploadedFileDisplay" class="uploaded-filename" style="display:none;">
+                <strong>LOCATED:</strong> <span id="fileNameDisplay"></span>
             </div>
-        <?php endif; ?>
+        </div>
     </div>
 </div>
 
@@ -119,7 +74,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             label.style.display = 'none';
         }
     });
+
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('fileToUpload');
+        const statusMessage = document.getElementById('statusMessage');
+        const messageText = document.getElementById('messageText');
+        const uploadedFileDisplay = document.getElementById('uploadedFileDisplay');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        if (fileInput.files.length === 0) {
+            statusMessage.style.display = 'block';
+            statusMessage.className = 'message error';
+            messageText.innerText = 'INPUT ERROR: Please select a valid file to intercept.';
+            uploadedFileDisplay.style.display = 'none';
+            return;
+        }
+
+        const fileName = fileInput.files[0].name;
+        
+        // Simulation delay
+        messageText.innerText = 'UPLOADING...';
+        statusMessage.style.display = 'block';
+        statusMessage.className = 'message info';
+        uploadedFileDisplay.style.display = 'none';
+
+        setTimeout(() => {
+            statusMessage.className = 'message success';
+            messageText.innerText = 'FILE TRANSMITTED SUCCESSFULLY! ALERT: System is currently running in VULNERABLE mode (Static Simulation).';
+            uploadedFileDisplay.style.display = 'block';
+            fileNameDisplay.innerText = fileName;
+        }, 1500);
+    });
 </script>
 
 </body>
 </html>
+

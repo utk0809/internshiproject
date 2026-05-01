@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Login — SQL Injection Demo</title>
+  <meta name="description" content="Secure login page demonstrating how parameterized queries prevent SQL Injection." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .param-tag {
+      display:inline-block;
+      background:rgba(16,185,129,.12);
+      color:var(--green);
+      border:1px solid rgba(16,185,129,.3);
+      border-radius:4px;
+      padding:1px 6px;
+      font-family:'Fira Code',monospace;
+      font-size:0.82rem;
+    }
+    .compare-row {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1.5rem;
+      margin-top:2.5rem;
+    }
+    @media(max-width:700px){ .compare-row{grid-template-columns:1fr;} }
+    .compare-block {
+      border-radius:var(--radius);
+      padding:1.5rem;
+      border:1px solid var(--border);
+    }
+    .compare-block.vuln { background:rgba(239,68,68,.04); border-color:rgba(239,68,68,.25); }
+    .compare-block.safe { background:rgba(16,185,129,.04); border-color:rgba(16,185,129,.25); }
+    .compare-block h3 {
+      font-family:'Orbitron',sans-serif;
+      font-size:0.9rem;
+      margin-bottom:1rem;
+      padding-bottom:.5rem;
+      border-bottom:2px solid;
+    }
+    .compare-block.vuln h3 { color:var(--red); border-color:rgba(239,68,68,.3); }
+    .compare-block.safe h3 { color:var(--green); border-color:rgba(16,185,129,.3); }
+    .result-panel { display: none; }
+    .result-panel.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ──────────────────────────────────────────────── -->
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">
+    <span>SQL</span><em>INJECT</em>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="index.html#how-it-works">HOW IT WORKS</a></li>
+    <li><a href="login.html">VULNERABLE VERSION</a></li>
+    <li><a href="secure.html" class="btn-outline-nav" style="color:var(--green)!important;border-color:var(--green)!important;">🛡️ SECURE</a></li>
+  </ul>
+</nav>
+
+<!-- SQL Injection Attack Simulation Lab -->
+<div class="login-wrapper" style="margin-bottom: 0; padding-bottom: 0;">
+  <div class="attack-lab" style="width: 100%; max-width: 900px; margin: 2rem auto 0 auto;">
+    <h2 class="section-title gradient-text" style="text-align:center;">Secure System Attack Lab</h2>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Pre-fill common SQL Injection payloads to see how parameterized queries neutralize them.</p>
+    
+    <div class="attack-grid">
+      <div class="attack-card">
+        <h4>1️⃣ User Bypass</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>' OR 1=1 --</code></p>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('\' OR 1=1 --', 'anything')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card" style="border-left-color: var(--purple);">
+        <h4 style="color:var(--purple);">2️⃣ Pass Bypass</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>' OR '1'='1</code></p>
+        <button type="button" class="btn btn-danger btn-sm" style="background:var(--purple);" onclick="prefill('admin', '\' OR \'1\'=\'1')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card">
+        <h4>3️⃣ Comment Inject</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>admin' --</code></p>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('admin\' --', 'wrong')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card">
+        <h4>4️⃣ Data Leak</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>' UNION SELECT...</code></p>
+        <button type="button" class="btn btn-danger btn-sm" onclick="prefill('\' UNION SELECT username,password FROM users --', 'anything')">💉 Pre-fill Attack</button>
+      </div>
+      
+      <div class="attack-card" style="border-left-color: var(--green);">
+        <h4 style="color:var(--green);">5️⃣ Valid User</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted);">Payload: <code>admin123</code></p>
+        <button type="button" class="btn btn-success btn-sm" onclick="prefill('admin', 'admin123')">✅ Pre-fill Valid</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Login Panel ──────────────────────────────────────────── -->
+<div class="login-wrapper" style="padding-top: 0; min-height: auto;">
+  <div style="width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
+
+    <!-- Left: Secure Login Form -->
+    <div class="login-card" style="border-color:rgba(16,185,129,.3);">
+      <span class="login-badge secure-badge">🛡️ Secure System</span>
+      <h2>Secure Login</h2>
+      <p class="subtitle">This form uses <strong>parameterized queries</strong> to safely handle user input.</p>
+
+      <div class="hint-box" style="background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.25);">
+        💡 Try the same SQL injection payload: <code style="color:var(--green);">' OR 1=1 --</code><br>
+        Watch it get completely blocked! ✅
+      </div>
+
+      <form id="secureForm">
+        <div class="form-group">
+          <label for="s_username">Username</label>
+          <input type="text" id="s_username" name="username" placeholder="Enter username…" />
+        </div>
+        <div class="form-group">
+          <label for="s_password">Password</label>
+          <input type="password" id="s_password" name="password" placeholder="Enter password…" />
+        </div>
+        <button type="submit" class="btn btn-success w-full">LOGIN →</button>
+      </form>
+
+      <!-- Result Panel -->
+      <div id="resultPanel" class="result-panel show">
+        <div id="resultTitle" class="result-title"></div>
+        <p id="resultMsg"></p>
+        
+        <div style="margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(16,185,129,.2);">
+          <p style="font-size:0.82rem;color:var(--green);"><strong>How it was blocked:</strong></p>
+          <p style="font-size:0.82rem;color:var(--text-muted);">The <code style="color:#c084fc">?</code> placeholder kept the query structure fixed. The payload <code style="color:#f87171" id="payloadText"></code> was passed as a literal string value — not SQL code — to the database engine, which searched for a user literally matching that string. No such user exists → access denied.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Explanation & Code Comparison -->
+    <div>
+      <div class="card" style="border-color:rgba(16,185,129,.2);">
+        <h3 style="font-size:1rem;margin-bottom:.8rem;color:var(--green);">🛡️ How Parameterized Queries Work</h3>
+        <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1rem;">
+          The query structure is compiled <em>before</em> user input is bound. 
+          The database treats bound values as <strong>pure data</strong>, never as SQL syntax.
+        </p>
+
+        <p style="font-size:0.82rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--green);margin-bottom:.4rem;">Secure PHP Code</p>
+        <div class="code-block" style="margin-bottom:1rem;">
+          <span class="code-label">PHP / PDO</span>
+          <span class="kw">$stmt</span> = <span class="kw">$pdo</span>->prepare(<br>
+          &nbsp;&nbsp;<span class="str">"SELECT * FROM users<br>
+          &nbsp;&nbsp;&nbsp;WHERE username = <span style="color:#34d399">?</span><br>
+          &nbsp;&nbsp;&nbsp;AND password = <span style="color:#34d399">?</span>"</span><br>
+          );<br>
+          <span class="kw">$stmt</span>->execute([<span class="kw">$username</span>, <span class="kw">$password</span>]);<br>
+          <span class="cmt">// ✅ Input is NEVER part of the SQL string</span>
+        </div>
+
+        <p style="font-size:0.82rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;">Query Template (Fixed Structure):</p>
+        <div class="query-box">
+          <span style="color:#c084fc">SELECT</span> * <span style="color:#c084fc">FROM</span> users<br>
+          &nbsp;<span style="color:#c084fc">WHERE</span> username = <span class="param-tag">?</span><br>
+          &nbsp;<span style="color:#c084fc">AND</span> password = <span class="param-tag">?</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:.6rem;">
+          Bound values: <span id="boundUser" class="param-tag">None</span>
+          &nbsp;&nbsp;<span id="boundPass" class="param-tag">None</span>
+        </p>
+        <div class="alert alert-success" style="margin-top:.8rem;">
+          <span class="alert-icon">✅</span>
+          <div>The <code>?</code> placeholders keep SQL structure fixed. Even if the user types SQL characters, they are escaped and treated as plain text data by the database engine.</div>
+        </div>
+        
+        <div style="margin-top:1.2rem;border-top:1px solid var(--border);padding-top:1rem;">
+          <p style="font-size:0.82rem;color:var(--text-muted);">See what happens on a <strong>vulnerable</strong> system with the same payload?</p>
+          <a href="login.html" class="btn btn-danger btn-sm" style="margin-top:.6rem;display:inline-block;">⚠️ Try Vulnerable Login →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function prefill(u, p) {
+    document.getElementById('s_username').value = u;
+    document.getElementById('s_password').value = p;
+  }
+
+  document.getElementById('secureForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const user = document.getElementById('s_username').value;
+    const pass = document.getElementById('s_password').value;
+    
+    // Simulate Secure Check (Exact match only)
+    const valid = (user === 'admin' && pass === 'admin123');
+    
+    const resultPanel = document.getElementById('resultPanel');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMsg = document.getElementById('resultMsg');
+    const payloadText = document.getElementById('payloadText');
+    const boundUser = document.getElementById('boundUser');
+    const boundPass = document.getElementById('boundPass');
+    
+    resultPanel.className = 'result-panel show';
+    boundUser.innerText = user || 'None';
+    boundPass.innerText = pass || 'None';
+    payloadText.innerText = user;
+
+    if (valid) {
+      resultPanel.classList.add('granted');
+      resultTitle.innerText = '✅ ACCESS GRANTED';
+      resultMsg.innerText = 'Match found! Parameterized query successfully retrieved the user.';
+    } else {
+      resultPanel.classList.add('denied');
+      resultTitle.innerText = '❌ ACCESS DENIED';
+      resultMsg.innerText = 'Zero rows returned. The parameterized query treated your input as data, not code.';
+    }
+  });
+</script>
+
+</body>
+</html>
